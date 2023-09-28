@@ -17,6 +17,7 @@ import javax.mail.internet.MimeBodyPart;
 import javax.mail.internet.MimeMessage;
 import javax.mail.internet.MimeMultipart;
 
+import com.turnero.entity.Recibo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -39,6 +40,8 @@ public class MailService {
 	
 	@Value("${config.smtp.auth}")
 	private String smtpAuth;
+	@Value("${email.sender}")
+	private String emailUser;
 	
 	@Bean
 	public Properties getProperties() {
@@ -51,16 +54,18 @@ public class MailService {
 	}
 	
 	
-	  public void sendSimpleMail() {
+	  public void sendSimpleMail(Recibo recibo) {
 		    Session session = Session.getDefaultInstance(getProperties(), config);
 		    try {
 		      Message msg = new MimeMessage(session);
-		      msg.setFrom(new InternetAddress("maxi19@gmail.com", "Saludental.com Admin"));
-		      msg.addRecipient(Message.RecipientType.TO,
-		                       new InternetAddress("maxi19@gmail.com", "Mr. User"));
-		      msg.setSubject("Your Example.com account has been activated");
-		      msg.setText("This is a test");
+		      msg.setFrom(new InternetAddress(emailUser, "Alejandro Blanco Secretaria"));
+		      msg.addRecipient(Message.RecipientType.TO, new InternetAddress("blancoalejandro956@gmail.com", "Mr. User"));
+		      msg.setSubject("Recibo de sueldo");
+		      msg.setText("adjudicamos su recibo de sueldo");
 		      Transport.send(msg);
+
+			  recibo
+
 		    } catch (AddressException e) {
 		    	System.out.println(e.getMessage());
 		    } catch (MessagingException e) {
@@ -79,9 +84,8 @@ public class MailService {
 
 		    try {
 		      Message msg = new MimeMessage(session);
-		      msg.setFrom(new InternetAddress("admin@example.com", "Example.com Admin"));
-		      msg.addRecipient(Message.RecipientType.TO,
-		                       new InternetAddress("user@example.com", "Mr. User"));
+		      msg.setFrom(new InternetAddress(emailUser, "Example.com Admin"));
+		      msg.addRecipient(Message.RecipientType.TO,new InternetAddress("user@example.com", "Mr. User"));
 		      msg.setSubject("Your Example.com account has been activated");
 		      msg.setText(msgBody);
 

@@ -3,12 +3,13 @@ package com.turnero.service;
 import java.io.File;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import com.turnero.entity.Recibo;
+import com.turnero.repository.ReciboRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -40,7 +41,13 @@ public class DirectoryReaderServiceImp implements DirectoryReaderService {
 	private Pattern pattern;
 	
 	@Autowired
-	private ReciboSinIdentificarRepository recibosRepository;
+	private ReciboSinIdentificarRepository recibosSinIdentificarRepository;
+
+	@Autowired
+	private ReciboRepository reciboRepository;
+
+
+
 	
 	@Override
 	public Set<String> getFileName() throws Exception {
@@ -52,12 +59,13 @@ public class DirectoryReaderServiceImp implements DirectoryReaderService {
 		if (listado == null || listado.length == 0) 
 			throw new Exception("no hay archivos en la carpeta destino");
 		//limpiamos la db de archivos de nombres
-		recibosRepository.deleteAll();
+		recibosSinIdentificarRepository.deleteAll();
 		for (int i=0; i< listado.length; i++) {
 		        nombres.add(listado[i]);
 		        ReciboSinIdentificar r = new  ReciboSinIdentificar();
 		        r.setFileName(listado[i]);
-		        recibosRepository.save(r);
+		        recibosSinIdentificarRepository.save(r);
+				;
 		 }
 		
 		return nombres;
@@ -72,15 +80,20 @@ public class DirectoryReaderServiceImp implements DirectoryReaderService {
 		//obtenemos la lista de nombres y su padron para obtener los archivos
 		Iterable<Personal> personales = personalRepository.findAll();
 		
-		Iterable<ReciboSinIdentificar> recibos = recibosRepository.findAll();
+		Iterable<ReciboSinIdentificar> recibosSinI = recibosSinIdentificarRepository.findAll();
 	
 		personales.forEach(x->{
-			logger.info("el usuario {} , tiene los siguientes archivos ", x.getNombres().concat(",").concat(x.getApellidos()));
-			recibos.forEach(j->{
+			logger.info("el usuario {}  tiene los siguientes archivos ", x.getNombres().concat(",").concat(x.getApellidos()));
+			recibosSinI.forEach(j->{
 			this.pattern = Pattern.compile(x.getPatron());
 			this.matcher = pattern.matcher(j.getFileName());
 			if (matcher.find()) {
-				logger.info(path.concat(matcher.group()));
+				logger.info((path.concat(" " + matcher.group())));
+				Recibo recibo = new  Recibo();
+				recibo.setPersonal(x);
+				recibo.setFileName(j.getFileName());
+				reciboRepository.save(recibo);
+
 			}
 			});
 			
