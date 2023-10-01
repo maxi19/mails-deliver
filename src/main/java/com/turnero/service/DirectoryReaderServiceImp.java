@@ -8,8 +8,9 @@ import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import com.turnero.entity.Operacion;
 import com.turnero.entity.Recibo;
-import com.turnero.repository.ReciboRepository;
+import com.turnero.repository.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,9 +19,6 @@ import org.springframework.stereotype.Service;
 
 import com.turnero.entity.Personal;
 import com.turnero.entity.ReciboSinIdentificar;
-import com.turnero.repository.PersonalRepository;
-import com.turnero.repository.ReciboSinIdentificarRepository;
-import com.turnero.repository.RegistroRepository;
 
 @Service
 public class DirectoryReaderServiceImp implements DirectoryReaderService {
@@ -45,6 +43,11 @@ public class DirectoryReaderServiceImp implements DirectoryReaderService {
 
 	@Autowired
 	private ReciboRepository reciboRepository;
+
+	@Autowired
+	private OperacionRepository operacionRepository;
+
+
 
 
 
@@ -86,13 +89,17 @@ public class DirectoryReaderServiceImp implements DirectoryReaderService {
 			logger.info("el usuario {}  tiene los siguientes archivos ", x.getNombres().concat(",").concat(x.getApellidos()));
 			recibosSinI.forEach(j->{
 			this.pattern = Pattern.compile(x.getPatron());
-			this.matcher = pattern.matcher(j.getFileName());
+			this.matcher = pattern.matcher(j.getFileName().replaceAll(" ", ""));
 			if (matcher.find()) {
 				logger.info((path.concat(" " + matcher.group())));
 				Recibo recibo = new  Recibo();
+				Operacion operacion = new Operacion();
 				recibo.setPersonal(x);
 				recibo.setFileName(j.getFileName());
+				operacion.setRecibo(recibo);
+				operacion.setMatcheado(true);
 				reciboRepository.save(recibo);
+				operacionRepository.save(operacion);
 
 			}
 			});

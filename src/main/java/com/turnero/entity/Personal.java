@@ -21,11 +21,11 @@ public class Personal {
 	@GenericGenerator(name = "uuid2", strategy = "uuid2")
 	@Column(columnDefinition = "BINARY(16)")
 	private UUID id;
-	
+
 	private String nombres;
-	
+
 	private String apellidos;
-	
+
 	private String email;
 	
 	private String patron;

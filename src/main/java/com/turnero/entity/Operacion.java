@@ -4,6 +4,7 @@ import lombok.Data;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
+import java.util.Date;
 import java.util.UUID;
 
 @Entity
@@ -21,5 +22,20 @@ public class Operacion {
     private Recibo recibo;
 
 
-    private String estado;
+    private boolean enviado;
+
+    private boolean matcheado;
+
+    private Date Fecha;
+
+    public Operacion() {
+    }
+
+    public Operacion(UUID id, Recibo recibo, boolean enviado, boolean matcheado, Date fecha) {
+        this.id = id;
+        this.recibo = recibo;
+        this.enviado = false;
+        this.matcheado = false;
+        Fecha = fecha;
+    }
 }

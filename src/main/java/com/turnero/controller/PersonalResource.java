@@ -24,10 +24,10 @@ public class PersonalResource {
 
     @PostMapping( value = "/registrar", produces = { MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_PROBLEM_JSON_VALUE } )
     public ResponseEntity<Void> registerPersona(@Valid  @RequestBody Personal personal) throws  Exception{
-    	String nombres = personal.getNombres().trim().toUpperCase();
-    	String apellidos = personal.getApellidos().trim().toUpperCase();
+    	String nombres = personal.getNombres().replaceAll(" ", "").toUpperCase();
+		String apellidos = personal.getApellidos().replaceAll(" ", "").toUpperCase();
     	
-    	String patron = apellidos.concat(".").concat(nombres).concat(".pdf") ;
+    	String patron = apellidos.concat(",").concat(nombres).concat("_").concat(".+").concat(".pdf") ;
     	if (personal.getPatron() ==  null) {
 			personal.setPatron(patron);
 		}
