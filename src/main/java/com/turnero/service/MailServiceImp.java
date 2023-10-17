@@ -63,20 +63,19 @@ public class MailServiceImp {
 		props.put("mail.smtp.auth", smtpAuth);
 		return props;
 	}
-	File carpeta = new File(path);
+	//File carpeta = new File(path);
 	  public void sendSimpleMail(Personal personal, ReciboSinIdentificar recibo) {
 		    Session session = Session.getDefaultInstance(getProperties(), config);
 		    try {
 			  String msgBody = "correo de prueba envio de archivo: ";
 		      Message msg = new MimeMessage(session);
-		      msg.setFrom(new InternetAddress(emailUser, "Alejandro Blanco Secretaria"));
+		      msg.setFrom(new InternetAddress(emailUser, ""));
 		      msg.addRecipient(Message.RecipientType.TO, new InternetAddress(personal.getEmail(), personal.getApellidos() + " " + personal.getNombres()));
 		      msg.setSubject("Recibo de sueldo");
 		      msg.setText(msgBody);
 
-			  String UrlRecibo = path + recibo.getFileName();
-				String htmlBody = "";          // ...
-				byte[] attachmentData = Files.readAllBytes(Paths.get(UrlRecibo));;  // ...
+			    String UrlRecibo = path.concat("/").concat(recibo.getFileName());
+				String htmlBody = "";
 				Multipart mp = new MimeMultipart();
 
 				MimeBodyPart htmlPart = new MimeBodyPart();
@@ -84,9 +83,10 @@ public class MailServiceImp {
 				mp.addBodyPart(htmlPart);
 
 				MimeBodyPart attachment = new MimeBodyPart();
-				InputStream attachmentDataStream = new ByteArrayInputStream(attachmentData);
+				attachment.attachFile(new File(UrlRecibo), "application/pdf", null);
 				attachment.setFileName("manual.pdf");
-				attachment.setContent(attachmentDataStream, "application/pdf");
+
+
 				mp.addBodyPart(attachment);
 
 				msg.setContent(mp);

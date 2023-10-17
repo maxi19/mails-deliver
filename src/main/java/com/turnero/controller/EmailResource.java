@@ -29,7 +29,7 @@ public class EmailResource {
 
     @PostMapping(value = "/envio/Individual", produces = { MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_PROBLEM_JSON_VALUE })
     public ResponseEntity<Void> enviarArchivo(@Valid @RequestBody Personal personal, ReciboSinIdentificar recibo) throws Exception{
-        mailServiceImp.sendSimpleMail(personal, recibo);
+        mailServiceImp.sendSimpleMail(personal,recibo);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
