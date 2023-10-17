@@ -1,10 +1,9 @@
 package com.turnero.service;
 
-import java.io.ByteArrayInputStream;
-import java.io.File;
-import java.io.InputStream;
-import java.io.UnsupportedEncodingException;
+import java.io.*;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.List;
 import java.util.Properties;
 
@@ -36,6 +35,8 @@ import org.springframework.stereotype.Component;
 @Component
 public class MailServiceImp {
 
+	@Value("${config.path.recibos}")
+	private String path;
 	@Autowired
 	private Authenticator config;
 	
@@ -55,26 +56,42 @@ public class MailServiceImp {
 	
 	@Bean
 	public Properties getProperties() {
-	    Properties props = new Properties();
-	    props.put("mail.smtp.host", smtpHost);
-	    props.put("mail.smtp.port", smtpPort);
-	    props.put("mail.smtp.ssl.enable", smtpEnable);
-	    props.put("mail.smtp.auth", smtpAuth);
-	    return props;
+		Properties props = new Properties();
+		props.put("mail.smtp.host", smtpHost);
+		props.put("mail.smtp.port", smtpPort);
+		props.put("mail.smtp.ssl.enable", smtpEnable);
+		props.put("mail.smtp.auth", smtpAuth);
+		return props;
 	}
-
+	File carpeta = new File(path);
 	  public void sendSimpleMail(Personal personal, ReciboSinIdentificar recibo) {
 		    Session session = Session.getDefaultInstance(getProperties(), config);
 		    try {
-
+			  String msgBody = "correo de prueba envio de archivo: ";
 		      Message msg = new MimeMessage(session);
 		      msg.setFrom(new InternetAddress(emailUser, "Alejandro Blanco Secretaria"));
 		      msg.addRecipient(Message.RecipientType.TO, new InternetAddress(personal.getEmail(), personal.getApellidos() + " " + personal.getNombres()));
 		      msg.setSubject("Recibo de sueldo");
-		      msg.setText("adjudicamos su recibo de sueldo");
-		      Transport.send(msg);
+		      msg.setText(msgBody);
 
+			  String UrlRecibo = path + recibo.getFileName();
+				String htmlBody = "";          // ...
+				byte[] attachmentData = Files.readAllBytes(Paths.get(UrlRecibo));;  // ...
+				Multipart mp = new MimeMultipart();
 
+				MimeBodyPart htmlPart = new MimeBodyPart();
+				htmlPart.setContent(htmlBody, "text/html");
+				mp.addBodyPart(htmlPart);
+
+				MimeBodyPart attachment = new MimeBodyPart();
+				InputStream attachmentDataStream = new ByteArrayInputStream(attachmentData);
+				attachment.setFileName("manual.pdf");
+				attachment.setContent(attachmentDataStream, "application/pdf");
+				mp.addBodyPart(attachment);
+
+				msg.setContent(mp);
+				// [END multipart_example]
+				Transport.send(msg);
 
 
 			} catch (AddressException e) {
@@ -82,6 +99,8 @@ public class MailServiceImp {
 		    } catch (MessagingException e) {
 		    	System.out.println(e.getMessage());
 		    } catch (UnsupportedEncodingException e) {
+                throw new RuntimeException(e);
+            } catch (IOException e) {
                 throw new RuntimeException(e);
             }
           // [END simple_example]
