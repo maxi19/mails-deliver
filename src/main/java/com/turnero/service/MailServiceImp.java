@@ -5,6 +5,7 @@ import java.io.File;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.nio.charset.StandardCharsets;
+import java.util.List;
 import java.util.Properties;
 
 import javax.mail.Authenticator;
@@ -19,9 +20,11 @@ import javax.mail.internet.MimeBodyPart;
 import javax.mail.internet.MimeMessage;
 import javax.mail.internet.MimeMultipart;
 
+import com.turnero.dto.DocenteDto;
 import com.turnero.dto.MessageUser;
 import com.turnero.entity.Personal;
 import com.turnero.entity.Recibo;
+import com.turnero.entity.ReciboSinIdentificar;
 import net.bytebuddy.description.field.FieldList;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -60,13 +63,13 @@ public class MailServiceImp {
 	    return props;
 	}
 
-	  public void sendSimpleMail(Recibo recibo, Personal personal, File file, MessageUser messageUser) {
+	  public void sendSimpleMail(Personal personal, ReciboSinIdentificar recibo) {
 		    Session session = Session.getDefaultInstance(getProperties(), config);
 		    try {
 
 		      Message msg = new MimeMessage(session);
 		      msg.setFrom(new InternetAddress(emailUser, "Alejandro Blanco Secretaria"));
-		      msg.addRecipient(Message.RecipientType.TO, new InternetAddress("blancoalejandro956@gmail.com", "Mr. User"));
+		      msg.addRecipient(Message.RecipientType.TO, new InternetAddress(personal.getEmail(), personal.getApellidos() + " " + personal.getNombres()));
 		      msg.setSubject("Recibo de sueldo");
 		      msg.setText("adjudicamos su recibo de sueldo");
 		      Transport.send(msg);
@@ -84,7 +87,7 @@ public class MailServiceImp {
           // [END simple_example]
 		  }
 
-		  public void sendMultipartMail() {
+		  public void sendMultipartMail(List<DocenteDto> docenteDto) {
 		    Properties props = new Properties();
 		    Session session = Session.getDefaultInstance(props, null);
 

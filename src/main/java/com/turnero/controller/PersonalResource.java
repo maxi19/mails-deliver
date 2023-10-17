@@ -17,6 +17,7 @@ import java.util.UUID;
 
 @RestController
 @RequestMapping(value = "/personal")
+@CrossOrigin(origins = "http://localhost:4200")
 public class PersonalResource {
 	
 	@Autowired

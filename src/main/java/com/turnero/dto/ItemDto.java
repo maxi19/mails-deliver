@@ -7,10 +7,7 @@ import lombok.Data;
 @Data
 public class ItemDto {
 
-	private final Set<Item> items;
-	
-	public class Item{
-		public String fileName;
-		public String email;
-	}
+	private String archivo;
+	private String path;
+	private boolean enviado;
 }

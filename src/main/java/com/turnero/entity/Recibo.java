@@ -34,6 +34,8 @@ public class Recibo {
 	private Personal personal;
 	
 	private String fileName;
+
+	private Boolean enviado;
 	
 		
 	

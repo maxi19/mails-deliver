@@ -1,13 +1,12 @@
 package com.turnero.service;
 
 import java.io.File;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import com.turnero.dto.DocenteDto;
+import com.turnero.dto.ItemDto;
 import com.turnero.entity.Operacion;
 import com.turnero.entity.Recibo;
 import com.turnero.repository.*;
@@ -48,65 +47,80 @@ public class DirectoryReaderServiceImp implements DirectoryReaderService {
 	private OperacionRepository operacionRepository;
 
 
-
-
-
-	
 	@Override
-	public Set<String> getFileName() throws Exception {
+	public void patron() {
+		List<Personal> personales = (List<Personal>) personalRepository.findAll();
 
-		Set<String> nombres = new HashSet<String>();
-		
+		for (Personal personal : personales) {
+			String nombres = personal.getNombres().replaceAll(" ", "").toUpperCase();
+			String apellidos = personal.getApellidos().replaceAll(" ", "").toUpperCase();
+			String patron = apellidos.concat(",").concat(nombres).concat("_").concat(".+").concat(".pdf") ;
+			personal.setPatron(patron);
+
+			personalRepository.save(personal);
+		}
+	}
+
+	@Override
+	public Set<ReciboSinIdentificar> getFileName() throws Exception {
+
+		Set<ReciboSinIdentificar> recibos = new HashSet<ReciboSinIdentificar>();
+
 		File carpeta = new File(path);
 		String[] listado = carpeta.list();
-		if (listado == null || listado.length == 0) 
+		if (listado == null || listado.length == 0)
 			throw new Exception("no hay archivos en la carpeta destino");
 		//limpiamos la db de archivos de nombres
 		recibosSinIdentificarRepository.deleteAll();
 		for (int i=0; i< listado.length; i++) {
-		        nombres.add(listado[i]);
-		        ReciboSinIdentificar r = new  ReciboSinIdentificar();
-		        r.setFileName(listado[i]);
-		        recibosSinIdentificarRepository.save(r);
-				;
-		 }
-		
-		return nombres;
+			ReciboSinIdentificar r = new  ReciboSinIdentificar();
+			r.setFileName(listado[i]);
+			recibosSinIdentificarRepository.save(r);
+		}
+		recibosSinIdentificarRepository.findAll().forEach(x->{
+			recibos.add(x);
+		});
+
+		return recibos;
 	}
 
 
 	@Override
-	public Set<String> machear() throws Exception {
-	
-		Map<String, String> mapa = new HashMap<>();
-		
-		//obtenemos la lista de nombres y su padron para obtener los archivos
-		Iterable<Personal> personales = personalRepository.findAll();
-		
-		Iterable<ReciboSinIdentificar> recibosSinI = recibosSinIdentificarRepository.findAll();
-	
-		personales.forEach(x->{
-			logger.info("el usuario {}  tiene los siguientes archivos ", x.getNombres().concat(",").concat(x.getApellidos()));
-			recibosSinI.forEach(j->{
-			this.pattern = Pattern.compile(x.getPatron());
-			this.matcher = pattern.matcher(j.getFileName().replaceAll(" ", ""));
-			if (matcher.find()) {
-				logger.info((path.concat(" " + matcher.group())));
-				Recibo recibo = new  Recibo();
-				Operacion operacion = new Operacion();
-				recibo.setPersonal(x);
-				recibo.setFileName(j.getFileName());
-				operacion.setRecibo(recibo);
-				operacion.setMatcheado(true);
-				reciboRepository.save(recibo);
-				operacionRepository.save(operacion);
+	public List<DocenteDto> machear(List<ReciboSinIdentificar> recibosSin) throws Exception {
 
+		Map<String, String> mapa = new HashMap<>();
+
+		//obtenemos la lista de nombres y su padron para obtener los archivos
+		List<Personal> personales = (List<Personal>) personalRepository.findAll();
+		List<DocenteDto> docentesDto = new ArrayList<DocenteDto>();
+
+		//Iterable<ReciboSinIdentificar> recibos = recibosSinIdentificarRepository.findAll();
+		List<ItemDto> items = null;
+		for (Personal personal : personales) {
+			logger.info("el usuario {} , tiene los siguientes archivos ", personal.getNombres().concat(",").concat(personal.getApellidos()));
+			DocenteDto docente = new DocenteDto();
+			docente.setNombres(personal.getNombres());
+			docente.setApellidos(personal.getApellidos());
+			docente.setEmail(personal.getEmail());
+			ItemDto item = null;
+			items = new ArrayList<ItemDto>();
+			for (ReciboSinIdentificar reciboSinIdentificar : recibosSin) {
+				this.pattern = Pattern.compile(personal.getPatron());
+				this.matcher = pattern.matcher(reciboSinIdentificar.getFileName().replaceAll(" ", ""));
+				while (matcher.find()) {
+					logger.info(path.concat(matcher.group()));
+					item = new ItemDto();
+					item.setArchivo(reciboSinIdentificar.getFileName());
+					item.setPath(path + reciboSinIdentificar.getFileName());
+					item.setEnviado(Boolean.FALSE);
+					items.add(item);
+				}
 			}
-			});
-			
-		});
-		
-		return null;
+			docente.setItemDto(items);
+			docentesDto.add(docente);
+		}
+
+		return docentesDto;
 	}
 
 
