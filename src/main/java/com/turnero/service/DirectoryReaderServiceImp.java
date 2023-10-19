@@ -111,7 +111,7 @@ public class DirectoryReaderServiceImp implements DirectoryReaderService {
 					logger.info(path.concat(matcher.group()));
 					item = new ItemDto();
 					item.setArchivo(reciboSinIdentificar.getFileName());
-					item.setPath(path + reciboSinIdentificar.getFileName());
+					item.setPath(path.concat("/".concat(reciboSinIdentificar.getFileName())));
 					item.setEnviado(Boolean.FALSE);
 					items.add(item);
 				}

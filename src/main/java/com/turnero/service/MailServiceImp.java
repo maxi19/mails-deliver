@@ -20,6 +20,7 @@ import javax.mail.internet.MimeMessage;
 import javax.mail.internet.MimeMultipart;
 
 import com.turnero.dto.DocenteDto;
+import com.turnero.dto.ItemDto;
 import com.turnero.dto.MessageUser;
 import com.turnero.entity.Personal;
 import com.turnero.entity.Recibo;
@@ -63,35 +64,32 @@ public class MailServiceImp {
 		props.put("mail.smtp.auth", smtpAuth);
 		return props;
 	}
-	//File carpeta = new File(path);
+
 	  public void sendSimpleMail(Personal personal, ReciboSinIdentificar recibo) {
 		    Session session = Session.getDefaultInstance(getProperties(), config);
 		    try {
 			  String msgBody = "correo de prueba envio de archivo: ";
 		      Message msg = new MimeMessage(session);
-		      msg.setFrom(new InternetAddress(emailUser, ""));
-		      msg.addRecipient(Message.RecipientType.TO, new InternetAddress(personal.getEmail(), personal.getApellidos() + " " + personal.getNombres()));
-		      msg.setSubject("Recibo de sueldo");
+		      msg.setFrom(new InternetAddress(emailUser, "Secretaria"));
+		      msg.addRecipient(Message.RecipientType.TO, new InternetAddress(personal.getEmail(), personal.getEmail()));
+		      msg.setSubject("Recibo De Sueldo");
 		      msg.setText(msgBody);
 
-			    String UrlRecibo = path.concat("/").concat(recibo.getFileName());
-				String htmlBody = "";
-				Multipart mp = new MimeMultipart();
+			  String UrlRecibo = path.concat("/").concat(recibo.getFileName());
+			  String htmlBody = "";
+			  Multipart mp = new MimeMultipart();
 
-				MimeBodyPart htmlPart = new MimeBodyPart();
-				htmlPart.setContent(htmlBody, "text/html");
-				mp.addBodyPart(htmlPart);
+			  MimeBodyPart htmlPart = new MimeBodyPart();
+			  htmlPart.setContent(htmlBody, "text/html");
+			  mp.addBodyPart(htmlPart);
 
-				MimeBodyPart attachment = new MimeBodyPart();
-				attachment.attachFile(new File(UrlRecibo), "application/pdf", null);
-				attachment.setFileName("manual.pdf");
+			  MimeBodyPart attachment = new MimeBodyPart();
+			  attachment.attachFile(new File(UrlRecibo), "application/pdf", null);
+			  attachment.setFileName(recibo.getFileName());
 
-
-				mp.addBodyPart(attachment);
-
-				msg.setContent(mp);
-				// [END multipart_example]
-				Transport.send(msg);
+			  mp.addBodyPart(attachment);
+			  msg.setContent(mp);
+			  Transport.send(msg);
 
 
 			} catch (AddressException e) {
@@ -107,37 +105,32 @@ public class MailServiceImp {
 		  }
 
 		  public void sendMultipartMail(List<DocenteDto> docenteDto) {
-		    Properties props = new Properties();
-		    Session session = Session.getDefaultInstance(props, null);
-
-		    String msgBody = "...";
-
+			Session session = Session.getDefaultInstance(getProperties(), config);
+		    String msgBody = "correo de prueba envio de archivo: ";
 		    try {
 		      Message msg = new MimeMessage(session);
-		      msg.setFrom(new InternetAddress(emailUser, "Example.com Admin"));
-		      msg.addRecipient(Message.RecipientType.TO,new InternetAddress("user@example.com", "Mr. User"));
-		      msg.setSubject("Your Example.com account has been activated");
-		      msg.setText(msgBody);
+		      msg.setFrom(new InternetAddress(emailUser, "Secretaria"));
+			  //String htmlBody = "";
+			  Multipart mp = new MimeMultipart();
+			  //MimeBodyPart htmlPart = new MimeBodyPart();
+			  //htmlPart.setContent(htmlBody, "text/html");
+			  //mp.addBodyPart(htmlPart);
 
-		      // [START multipart_example]
-		      String htmlBody = "";          // ...
-		      byte[] attachmentData = null;  // ...
-		      Multipart mp = new MimeMultipart();
+			  for (DocenteDto docenteDtos :docenteDto) {
+				  msg.addRecipient(Message.RecipientType.TO,new InternetAddress(docenteDtos.getEmail(), docenteDtos.getEmail()));
+				  msg.setSubject("Your Example.com account has been activated");
+				  msg.setText(msgBody);
+				  for (ItemDto items: docenteDtos.getItemDto()) {
+					MimeBodyPart attachment = new MimeBodyPart();
+					attachment.attachFile(new File(path.concat("/").concat(items.getArchivo())), "application/pdf", null);
+					attachment.setFileName(items.getArchivo());
+					mp.addBodyPart(attachment);
+				  }
+				  msg.setContent(mp);
+				  Transport.send(msg);
+			  }
 
-		      MimeBodyPart htmlPart = new MimeBodyPart();
-		      htmlPart.setContent(htmlBody, "text/html");
-		      mp.addBodyPart(htmlPart);
 
-		      MimeBodyPart attachment = new MimeBodyPart();
-		      InputStream attachmentDataStream = new ByteArrayInputStream(attachmentData);
-		      attachment.setFileName("manual.pdf");
-		      attachment.setContent(attachmentDataStream, "application/pdf");
-		      mp.addBodyPart(attachment);
-
-		      msg.setContent(mp);
-		      // [END multipart_example]
-
-		      Transport.send(msg);
 
 		    } catch (AddressException e) {
 		      // ...
@@ -145,8 +138,10 @@ public class MailServiceImp {
 		      // ...
 		    } catch (UnsupportedEncodingException e) {
 		      // ...
-		    }
-		  }
+		    } catch (IOException e) {
+				throw new RuntimeException(e);
+			}
+          }
 
 
 	

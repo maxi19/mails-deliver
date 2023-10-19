@@ -27,15 +27,15 @@ public class EmailResource {
     @Autowired
     MailServiceImp mailServiceImp;
 
-    @PostMapping(value = "/envio/Individual", produces = { MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_PROBLEM_JSON_VALUE })
-    public ResponseEntity<Void> enviarArchivo(@Valid @RequestBody Personal personal, ReciboSinIdentificar recibo) throws Exception{
+    @PostMapping(value = "/envio/individual", produces = { MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_PROBLEM_JSON_VALUE })
+    public ResponseEntity<Void> enviarArchivo(@Valid @RequestBody Personal personal,@Valid @RequestBody ReciboSinIdentificar recibo) throws Exception{
         mailServiceImp.sendSimpleMail(personal,recibo);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @PostMapping(value = "/envio/varios", produces = { MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_PROBLEM_JSON_VALUE })
-    public ResponseEntity<Void> enviarArchivos(List<DocenteDto> docenteDtos) throws Exception{
-        mailServiceImp.sendMultipartMail(docenteDtos);
+    public ResponseEntity<Void> enviarArchivos(@Valid @RequestBody List<DocenteDto> docentesDto) throws Exception{
+        mailServiceImp.sendMultipartMail(docentesDto);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 }
