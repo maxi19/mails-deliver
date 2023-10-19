@@ -47,6 +47,7 @@ public class DirectoryReaderServiceImp implements DirectoryReaderService {
 	private OperacionRepository operacionRepository;
 
 
+
 	@Override
 	public void patron() {
 		List<Personal> personales = (List<Personal>) personalRepository.findAll();
@@ -62,9 +63,26 @@ public class DirectoryReaderServiceImp implements DirectoryReaderService {
 	}
 
 	@Override
+	public void crearPDF() {
+		List<Personal> personales = (List<Personal>) personalRepository.findAll();
+
+		File directorio = new File(path);
+		//String[] random ={"asd", "asdjas", "asdasd"};
+		//int numero = random.length;
+		//int numRandom= (int)Math.random()*numero;
+
+		//for (Personal personal: personales) {
+			//File pdf1 = new File(directorio, personal.getApellidos().concat(",".concat(personal.getNombres().concat("_".concat("asda").concat(".pdf")))));
+			//File pdf2 = new File(directorio, personal.getApellidos().concat(",".concat(personal.getNombres().concat("_".concat("3123a").concat(".pdf")))));
+		//}
+		//C:\workspace\Secretaria\Recibos
+		File pdf1 = new File(directorio,"dsaddas.pdf");
+	}
+
+	@Override
 	public Set<ReciboSinIdentificar> getFileName() throws Exception {
 
-		Set<ReciboSinIdentificar> recibos = new HashSet<ReciboSinIdentificar>();
+		Set<ReciboSinIdentificar> recibosSinIdentificar = new HashSet<ReciboSinIdentificar>();
 
 		File carpeta = new File(path);
 		String[] listado = carpeta.list();
@@ -72,16 +90,22 @@ public class DirectoryReaderServiceImp implements DirectoryReaderService {
 			throw new Exception("no hay archivos en la carpeta destino");
 		//limpiamos la db de archivos de nombres
 		recibosSinIdentificarRepository.deleteAll();
+		List<Recibo> recibos = (List<Recibo>) reciboRepository.findAll();
 		for (int i=0; i< listado.length; i++) {
-			ReciboSinIdentificar r = new  ReciboSinIdentificar();
-			r.setFileName(listado[i]);
-			recibosSinIdentificarRepository.save(r);
+			for (Recibo recibo:recibos) {
+				if(listado[i] != recibo.getFileName()){
+					ReciboSinIdentificar r = new  ReciboSinIdentificar();
+					r.setFileName(listado[i]);
+					recibosSinIdentificarRepository.save(r);
+				}
+			}
+
 		}
 		recibosSinIdentificarRepository.findAll().forEach(x->{
-			recibos.add(x);
+			recibosSinIdentificar.add(x);
 		});
 
-		return recibos;
+		return recibosSinIdentificar;
 	}
 
 

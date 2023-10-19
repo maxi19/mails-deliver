@@ -77,8 +77,16 @@
 		    <scope>provided</scope>
 		</dependency>
 
-		
-	<!-- https://mvnrepository.com/artifact/com.fasterxml.uuid/java-uuid-generator -->
+		<dependency>
+			<groupId>com.aspose</groupId>
+			<artifactId>aspose-pdf</artifactId>
+			<version>20.11</version>
+			<classifier>jdk17</classifier>
+		</dependency>
+
+
+
+		<!-- https://mvnrepository.com/artifact/com.fasterxml.uuid/java-uuid-generator -->
 		<dependency>
 		    <groupId>com.fasterxml.uuid</groupId>
 		    <artifactId>java-uuid-generator</artifactId>

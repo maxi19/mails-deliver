@@ -42,6 +42,11 @@ public class DeliverResource {
 	/*@PostMapping(value =  "/archivos/patron")
 	public void   asdas(){
 		directoryReaderService.patron();
+
 	}*/
+	@PostMapping(value = "/pdf")
+	public void pdf(){
+		directoryReaderService.crearPDF();
+	}
 	
 }

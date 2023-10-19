@@ -17,4 +17,6 @@ public interface DirectoryReaderService {
 
 	public void patron();
 
+	public void crearPDF();
+
 }
