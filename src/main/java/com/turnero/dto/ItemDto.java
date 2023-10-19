@@ -8,6 +8,5 @@ import lombok.Data;
 public class ItemDto {
 
 	private String archivo;
-	private String path;
 	private boolean enviado;
 }

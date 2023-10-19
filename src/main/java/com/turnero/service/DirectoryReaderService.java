@@ -1,6 +1,7 @@
 package com.turnero.service;
 
 import com.turnero.dto.DocenteDto;
+import com.turnero.entity.Operacion;
 import com.turnero.entity.Personal;
 import com.turnero.entity.ReciboSinIdentificar;
 
@@ -15,4 +16,5 @@ public interface DirectoryReaderService {
 	public List<DocenteDto> machear(List<ReciboSinIdentificar> reciboSinIdentificarse) throws Exception;
 
 	public void patron();
+
 }

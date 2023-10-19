@@ -57,7 +57,7 @@ public class PersonalResource {
 	}
 
 
-	@GetMapping(value =  "/listarPersonal" , produces = { MediaType.APPLICATION_JSON_VALUE,
+	@GetMapping(value =  "/listar" , produces = { MediaType.APPLICATION_JSON_VALUE,
 			MediaType.APPLICATION_PROBLEM_JSON_VALUE })
 	public ResponseEntity<List<Personal>>  personas() throws Exception {
 		List<Personal> personal = new ArrayList<Personal>();

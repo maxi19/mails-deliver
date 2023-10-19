@@ -24,7 +24,6 @@ public class Operacion {
 
     private boolean enviado;
 
-    private boolean matcheado;
 
     private Date Fecha;
 
@@ -35,7 +34,6 @@ public class Operacion {
         this.id = id;
         this.recibo = recibo;
         this.enviado = false;
-        this.matcheado = false;
         Fecha = fecha;
     }
 }
