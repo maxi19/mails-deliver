@@ -1,9 +1,7 @@
 package com.turnero.controller;
 
 import com.turnero.dto.DocenteDto;
-import com.turnero.dto.MessageUser;
 import com.turnero.entity.Personal;
-import com.turnero.entity.Recibo;
 import com.turnero.entity.ReciboSinIdentificar;
 import com.turnero.service.MailServiceImp;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,7 +14,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
-import java.io.File;
 import java.util.List;
 
 @RestController

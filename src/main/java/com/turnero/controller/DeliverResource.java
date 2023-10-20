@@ -50,5 +50,7 @@ public class DeliverResource {
 		directoryReaderService.crearPDF();
 		return new ResponseEntity<>(HttpStatus.OK);
 	}
+
+
 	
 }

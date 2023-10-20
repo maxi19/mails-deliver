@@ -1,11 +1,7 @@
 package com.turnero.service;
 
 import java.io.*;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
-import java.nio.file.Paths;
-import java.util.List;
-import java.util.Properties;
+import java.util.*;
 
 import javax.mail.Authenticator;
 import javax.mail.Message;
@@ -21,16 +17,13 @@ import javax.mail.internet.MimeMultipart;
 
 import com.turnero.dto.DocenteDto;
 import com.turnero.dto.ItemDto;
-import com.turnero.dto.MessageUser;
 import com.turnero.entity.Personal;
-import com.turnero.entity.Recibo;
+import com.turnero.entity.ReciboEnviado;
 import com.turnero.entity.ReciboSinIdentificar;
-import net.bytebuddy.description.field.FieldList;
+import com.turnero.repository.ReciboEnviadoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
-import org.springframework.mail.javamail.JavaMailSender;
-import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -64,6 +57,8 @@ public class MailServiceImp {
 		props.put("mail.smtp.auth", smtpAuth);
 		return props;
 	}
+	@Autowired
+	private ReciboEnviadoRepository reciboEnviadoRepository;
 
 	  public void sendSimpleMail(Personal personal, ReciboSinIdentificar recibo) {
 		    Session session = Session.getDefaultInstance(getProperties(), config);
@@ -90,6 +85,13 @@ public class MailServiceImp {
 			  mp.addBodyPart(attachment);
 			  msg.setContent(mp);
 			  Transport.send(msg);
+
+
+			  ReciboEnviado reciboEnviado = new ReciboEnviado();
+			  reciboEnviado.setPersonal(personal);
+			  reciboEnviado.setFileName(recibo.getFileName());
+			//reciboEnviado.setFecha();
+              reciboEnviadoRepository.save(reciboEnviado);
 
 
 			} catch (AddressException e) {
@@ -121,16 +123,26 @@ public class MailServiceImp {
 				  msg.setSubject("Your Example.com account has been activated");
 				  msg.setText(msgBody);
 				  for (ItemDto items: docenteDtos.getItemDto()) {
-					MimeBodyPart attachment = new MimeBodyPart();
-					attachment.attachFile(new File(path.concat("/").concat(items.getArchivo())), "application/pdf", null);
-					attachment.setFileName(items.getArchivo());
-					mp.addBodyPart(attachment);
+						MimeBodyPart attachment = new MimeBodyPart();
+						attachment.attachFile(new File(path.concat("/").concat(items.getArchivo())), "application/pdf", null);
+						attachment.setFileName(items.getArchivo());
+						mp.addBodyPart(attachment);
+
+						Date fechaDate = new Date();
+					  	Calendar fecha = new GregorianCalendar();
+						  String dia = Integer.toString(fecha.get(Calendar.DATE));
+						  //String hora = Integer.toString(fecha.get(Calendar.))
+					  	ReciboEnviado reciboEnviado = new ReciboEnviado();
+					  //reciboEnviado.setPersonal(personal);
+					  	reciboEnviado.setFileName(items.getArchivo());
+					    reciboEnviado.setFecha(fechaDate);
+					  	reciboEnviadoRepository.save(reciboEnviado);
 				  }
 				  msg.setContent(mp);
 				  Transport.send(msg);
+
+
 			  }
-
-
 
 		    } catch (AddressException e) {
 		      // ...

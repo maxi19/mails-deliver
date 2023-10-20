@@ -1,5 +1,6 @@
 package com.turnero.entity;
 
+import java.util.Date;
 import java.util.UUID;
 
 import javax.persistence.CascadeType;
@@ -13,14 +14,13 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 
 import org.hibernate.annotations.GenericGenerator;
-import org.hibernate.annotations.ManyToAny;
 
 import lombok.Data;
 
 
 @Entity
 @Data
-public class Recibo {
+public class ReciboEnviado {
 
 	@Id
 	@GeneratedValue(strategy= GenerationType.AUTO)
@@ -35,7 +35,8 @@ public class Recibo {
 	
 	private String fileName;
 
-	private Boolean enviado;
+	private Date fecha;
+
 	
 		
 	

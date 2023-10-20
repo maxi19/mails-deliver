@@ -19,7 +19,7 @@ public class Operacion {
 
     @ManyToOne (optional = false, cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JoinColumn(name = "recibo_id", referencedColumnName = "id")
-    private Recibo recibo;
+    private ReciboEnviado recibo;
 
 
     private boolean enviado;
@@ -30,7 +30,7 @@ public class Operacion {
     public Operacion() {
     }
 
-    public Operacion(UUID id, Recibo recibo, boolean enviado, boolean matcheado, Date fecha) {
+    public Operacion(UUID id, ReciboEnviado recibo, boolean enviado, boolean matcheado, Date fecha) {
         this.id = id;
         this.recibo = recibo;
         this.enviado = false;

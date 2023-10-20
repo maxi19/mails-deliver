@@ -1,7 +1,6 @@
 package com.turnero.service;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 
 import java.io.IOException;
 import java.util.*;
@@ -11,8 +10,7 @@ import java.util.regex.Pattern;
 
 import com.turnero.dto.DocenteDto;
 import com.turnero.dto.ItemDto;
-import com.turnero.entity.Operacion;
-import com.turnero.entity.Recibo;
+import com.turnero.entity.ReciboEnviado;
 import com.turnero.repository.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -22,9 +20,6 @@ import org.springframework.stereotype.Service;
 
 import com.turnero.entity.Personal;
 import com.turnero.entity.ReciboSinIdentificar;
-
-
-import javax.swing.text.Document;
 
 @Service
 public class DirectoryReaderServiceImp implements DirectoryReaderService {
@@ -48,7 +43,7 @@ public class DirectoryReaderServiceImp implements DirectoryReaderService {
 	private ReciboSinIdentificarRepository recibosSinIdentificarRepository;
 
 	@Autowired
-	private ReciboRepository reciboRepository;
+	private ReciboEnviadoRepository reciboEnviadoRepository;
 
 	@Autowired
 	private OperacionRepository operacionRepository;
@@ -104,15 +99,10 @@ public class DirectoryReaderServiceImp implements DirectoryReaderService {
 			throw new Exception("no hay archivos en la carpeta destino");
 		//limpiamos la db de archivos de nombres
 		recibosSinIdentificarRepository.deleteAll();
-		List<Recibo> recibos = (List<Recibo>) reciboRepository.findAll();
 		for (int i=0; i< listado.length; i++) {
-			for (Recibo recibo:recibos) {
-				if(listado[i] != recibo.getFileName()){
-					ReciboSinIdentificar r = new  ReciboSinIdentificar();
-					r.setFileName(listado[i]);
-					recibosSinIdentificarRepository.save(r);
-				}
-			}
+				ReciboSinIdentificar r = new  ReciboSinIdentificar();
+				r.setFileName(listado[i]);
+				recibosSinIdentificarRepository.save(r);
 
 		}
 		recibosSinIdentificarRepository.findAll().forEach(x->{
@@ -129,12 +119,11 @@ public class DirectoryReaderServiceImp implements DirectoryReaderService {
 		Map<String, String> mapa = new HashMap<>();
 
 		//obtenemos la lista de nombres y su padron para obtener los archivos
-		List<Personal> personales = (List<Personal>) personalRepository.findAll();
 		List<DocenteDto> docentesDto = new ArrayList<DocenteDto>();
 
 		//Iterable<ReciboSinIdentificar> recibos = recibosSinIdentificarRepository.findAll();
 		List<ItemDto> items = null;
-		for (Personal personal : personales) {
+		for (Personal personal : personalRepository.findAll()) {
 			logger.info("el usuario {} , tiene los siguientes archivos ", personal.getNombres().concat(",").concat(personal.getApellidos()));
 			DocenteDto docente = new DocenteDto();
 			docente.setNombres(personal.getNombres());
@@ -146,11 +135,20 @@ public class DirectoryReaderServiceImp implements DirectoryReaderService {
 				this.pattern = Pattern.compile(personal.getPatron());
 				this.matcher = pattern.matcher(reciboSinIdentificar.getFileName().replaceAll(" ", ""));
 				while (matcher.find()) {
-					logger.info(path.concat(matcher.group()));
-					item = new ItemDto();
-					item.setArchivo(reciboSinIdentificar.getFileName());
-					item.setEnviado(Boolean.FALSE);
-					items.add(item);
+					boolean enviado =false;
+					for (ReciboEnviado reciboEnviados:reciboEnviadoRepository.findAll()) {
+						if(reciboEnviados.getFileName() !=reciboSinIdentificar.getFileName()){
+							enviado = true;
+							break;
+						}
+					}
+					if(!enviado){
+						logger.info(path.concat(matcher.group()));
+						item = new ItemDto();
+						item.setArchivo(reciboSinIdentificar.getFileName());
+						item.setEnviado(Boolean.FALSE);
+						items.add(item);
+					}
 				}
 			}
 			docente.setItemDto(items);
