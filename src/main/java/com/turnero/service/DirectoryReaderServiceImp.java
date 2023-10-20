@@ -1,9 +1,13 @@
 package com.turnero.service;
 
 import java.io.File;
+import java.io.FileNotFoundException;
+
+import java.io.IOException;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
 
 import com.turnero.dto.DocenteDto;
 import com.turnero.dto.ItemDto;
@@ -18,6 +22,9 @@ import org.springframework.stereotype.Service;
 
 import com.turnero.entity.Personal;
 import com.turnero.entity.ReciboSinIdentificar;
+
+
+import javax.swing.text.Document;
 
 @Service
 public class DirectoryReaderServiceImp implements DirectoryReaderService {
@@ -63,20 +70,41 @@ public class DirectoryReaderServiceImp implements DirectoryReaderService {
 	}
 
 	@Override
-	public void crearPDF() {
-		List<Personal> personales = (List<Personal>) personalRepository.findAll();
+	public void crearPDF(){
 
 		File directorio = new File(path);
-		//String[] random ={"asd", "asdjas", "asdasd"};
-		//int numero = random.length;
-		//int numRandom= (int)Math.random()*numero;
+		String palabraRandom[] ={"recibo1", "recibo2"};
+		int numRandom= (int)Math.random();
+		String palabraYaIngresada[] = new String[palabraRandom.length];
+		for (Personal personal: personalRepository.findAll()) {
 
-		//for (Personal personal: personales) {
-			//File pdf1 = new File(directorio, personal.getApellidos().concat(",".concat(personal.getNombres().concat("_".concat("asda").concat(".pdf")))));
-			//File pdf2 = new File(directorio, personal.getApellidos().concat(",".concat(personal.getNombres().concat("_".concat("3123a").concat(".pdf")))));
-		//}
-		//C:\workspace\Secretaria\Recibos
-		File pdf1 = new File(directorio,"dsaddas.pdf");
+			for (int i = 0; i < 2; i++){
+				String palabra = palabraRandom[numRandom];
+				if(i != 0){
+					for (int j = 0; j < palabraRandom.length;i++){
+
+
+						if(palabra == palabraYaIngresada[j]){
+							palabra = palabraRandom[numRandom];
+						}
+
+					}
+				}
+
+				File pdf = new File(directorio, "/".concat(personal.getApellidos().concat(",".concat(personal.getNombres().concat("_".concat("palabra").concat(".pdf"))))));
+				palabraYaIngresada[i] = palabra;
+				try {
+					pdf.createNewFile();
+
+				} catch (IOException e) {
+					throw new RuntimeException(e);
+				}
+			}
+
+		}
+
+
+
 	}
 
 	@Override

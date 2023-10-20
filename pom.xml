@@ -76,14 +76,11 @@
 		    <version>${lombok.version}</version>
 		    <scope>provided</scope>
 		</dependency>
-
 		<dependency>
-			<groupId>com.aspose</groupId>
-			<artifactId>aspose-pdf</artifactId>
-			<version>20.11</version>
-			<classifier>jdk17</classifier>
+			<groupId>com.itextpdf</groupId>
+			<artifactId>itextpdf</artifactId>
+			<version>5.5.10</version>
 		</dependency>
-
 
 
 		<!-- https://mvnrepository.com/artifact/com.fasterxml.uuid/java-uuid-generator -->

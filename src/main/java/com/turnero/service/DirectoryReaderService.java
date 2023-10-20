@@ -5,6 +5,7 @@ import com.turnero.entity.Operacion;
 import com.turnero.entity.Personal;
 import com.turnero.entity.ReciboSinIdentificar;
 
+import java.io.FileNotFoundException;
 import java.util.List;
 import java.util.Set;
 
@@ -17,6 +18,6 @@ public interface DirectoryReaderService {
 
 	public void patron();
 
-	public void crearPDF();
+	public void crearPDF() ;
 
 }
