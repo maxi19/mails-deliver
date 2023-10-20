@@ -74,25 +74,11 @@ public class DirectoryReaderServiceImp implements DirectoryReaderService {
 
 		File directorio = new File(path);
 		String palabraRandom[] ={"recibo1", "recibo2"};
-		int numRandom= (int)Math.random();
-		String palabraYaIngresada[] = new String[palabraRandom.length];
 		for (Personal personal: personalRepository.findAll()) {
 
 			for (int i = 0; i < 2; i++){
-				String palabra = palabraRandom[numRandom];
-				if(i != 0){
-					for (int j = 0; j < palabraRandom.length;i++){
 
-
-						if(palabra == palabraYaIngresada[j]){
-							palabra = palabraRandom[numRandom];
-						}
-
-					}
-				}
-
-				File pdf = new File(directorio, "/".concat(personal.getApellidos().concat(",".concat(personal.getNombres().concat("_".concat("palabra").concat(".pdf"))))));
-				palabraYaIngresada[i] = palabra;
+				File pdf = new File(directorio, "/".concat(personal.getApellidos().concat(",".concat(personal.getNombres().concat("_".concat(palabraRandom[i]).concat(".pdf"))))));
 				try {
 					pdf.createNewFile();
 

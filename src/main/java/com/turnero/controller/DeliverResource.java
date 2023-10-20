@@ -40,13 +40,15 @@ public class DeliverResource {
 	}
 
 	/*@PostMapping(value =  "/archivos/patron")
-	public void   asdas(){
+	public ResponseEntity<Void>  asdas(){
 		directoryReaderService.patron();
+		return new ResponseEntity<>(HttpStatus.OK);
 
 	}*/
 	@PostMapping(value = "/pdf")
-	public void pdf(){
+	public ResponseEntity<Void> pdf(){
 		directoryReaderService.crearPDF();
+		return new ResponseEntity<>(HttpStatus.OK);
 	}
 	
 }
