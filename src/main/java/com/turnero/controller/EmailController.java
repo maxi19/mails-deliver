@@ -14,11 +14,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
-import java.util.List;
 
 @RestController
 @RequestMapping(value = "/email")
-public class EmailResource {
+public class EmailController {
 
 
     @Autowired
@@ -26,13 +25,13 @@ public class EmailResource {
 
     @PostMapping(value = "/envio/individual", produces = { MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_PROBLEM_JSON_VALUE })
     public ResponseEntity<Void> enviarArchivo(@Valid @RequestBody Personal personal,@Valid @RequestBody ReciboSinIdentificar recibo) throws Exception{
-        mailServiceImp.sendSimpleMail(personal,recibo);
+        mailServiceImp.enviarReciboIndividual(personal,recibo);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @PostMapping(value = "/envio/varios", produces = { MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_PROBLEM_JSON_VALUE })
-    public ResponseEntity<Void> enviarArchivos(@Valid @RequestBody List<DocenteDto> docentesDto) throws Exception{
-        mailServiceImp.sendMultipartMail(docentesDto);
+    public ResponseEntity<Void> enviarArchivos(@Valid @RequestBody DocenteDto docenteDto) throws Exception{
+        mailServiceImp.enviarVariosRecibos(docenteDto);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 }

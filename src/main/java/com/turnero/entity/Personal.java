@@ -17,10 +17,8 @@ import lombok.Data;
 public class Personal {
 
 	@Id
-	@GeneratedValue(strategy= GenerationType.AUTO)
-	@GenericGenerator(name = "uuid2", strategy = "uuid2")
-	@Column(columnDefinition = "BINARY(16)")
-	private UUID id;
+	@GeneratedValue(strategy= GenerationType.IDENTITY)
+	private Integer id;
 
 	private String nombres;
 

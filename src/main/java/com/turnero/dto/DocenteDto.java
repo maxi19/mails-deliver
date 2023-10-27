@@ -10,9 +10,10 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 public class DocenteDto {
-
+    private int id;
     private String nombres;
     private String apellidos;
     private String email;
     private List<ItemDto> ItemDto;
+
 }

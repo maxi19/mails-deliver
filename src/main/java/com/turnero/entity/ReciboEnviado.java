@@ -1,5 +1,6 @@
 package com.turnero.entity;
 
+import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.UUID;
 
@@ -13,7 +14,6 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 
-import org.hibernate.annotations.GenericGenerator;
 
 import lombok.Data;
 
@@ -23,10 +23,8 @@ import lombok.Data;
 public class ReciboEnviado {
 
 	@Id
-	@GeneratedValue(strategy= GenerationType.AUTO)
-	@GenericGenerator(name = "uuid2", strategy = "uuid2")
-	@Column(columnDefinition = "BINARY(16)")
-	private UUID id;
+	@GeneratedValue(strategy= GenerationType.IDENTITY)
+	private Long id;
 	
 	
 	@ManyToOne (optional = false, cascade = CascadeType.ALL, fetch = FetchType.LAZY)
@@ -35,7 +33,7 @@ public class ReciboEnviado {
 	
 	private String fileName;
 
-	private Date fecha;
+	private LocalDateTime fecha;
 
 	
 		

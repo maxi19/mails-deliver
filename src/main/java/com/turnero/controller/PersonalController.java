@@ -13,20 +13,21 @@ import com.turnero.service.PersonalService;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 
 @RestController
 @RequestMapping(value = "/personal")
 @CrossOrigin(origins = "http://localhost:4200")
-public class PersonalResource {
+public class PersonalController {
 	
 	@Autowired
 	private PersonalService personalService;
 
     @PostMapping( value = "/registrar", produces = { MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_PROBLEM_JSON_VALUE } )
     public ResponseEntity<Void> registerPersona(@Valid  @RequestBody Personal personal) throws  Exception{
-    	String nombres = personal.getNombres().replaceAll(" ", "").toUpperCase();
-		String apellidos = personal.getApellidos().replaceAll(" ", "").toUpperCase();
+		personal.setApellidos(personal.getApellidos().toUpperCase());
+		personal.setNombres(personal.getNombres().toUpperCase());
+    	String nombres = personal.getNombres().replaceAll(" ", "");
+		String apellidos = personal.getApellidos().replaceAll(" ", "");
     	
     	String patron = apellidos.concat(",").concat(nombres).concat("_").concat(".+").concat(".pdf") ;
     	if (personal.getPatron() ==  null) {
@@ -45,13 +46,13 @@ public class PersonalResource {
 
 	@GetMapping(value =  "/eliminarPersonal/{id}" , produces = { MediaType.APPLICATION_JSON_VALUE,
 			MediaType.APPLICATION_PROBLEM_JSON_VALUE })
-	public ResponseEntity<Void>  eliminar(@PathVariable UUID id  ) throws Exception {
+	public ResponseEntity<Void>  eliminar(@PathVariable Integer id  ) throws Exception {
 		personalService.eliminarPersonal(id);
 		return new ResponseEntity<>(HttpStatus.OK);
 	}
 	@GetMapping(value =  "/buscarPersonal/{id}" , produces = { MediaType.APPLICATION_JSON_VALUE,
 			MediaType.APPLICATION_PROBLEM_JSON_VALUE })
-	public ResponseEntity<Personal>  prueba2(@PathVariable UUID id  ) throws Exception {
+	public ResponseEntity<Personal>  prueba2(@PathVariable Integer id  ) throws Exception {
 		Personal p = personalService.buscarPersonal(id);
 		return new ResponseEntity<Personal>(p,HttpStatus.OK);
 	}

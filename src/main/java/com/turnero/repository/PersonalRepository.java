@@ -6,11 +6,13 @@ import java.util.UUID;
 import org.springframework.data.repository.CrudRepository;
 
 import com.turnero.entity.Personal;
+import org.springframework.stereotype.Repository;
 
-public interface PersonalRepository extends CrudRepository<Personal, UUID>{
+@Repository
+public interface PersonalRepository extends CrudRepository<Personal, Integer>{
 
 
-    Optional<Personal> findById(UUID id);
+    Optional<Personal> findById(Integer id);
     Optional<Personal> findByEmail(String email);
 	
 }

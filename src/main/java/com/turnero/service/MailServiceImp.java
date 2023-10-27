@@ -1,6 +1,7 @@
 package com.turnero.service;
 
 import java.io.*;
+import java.time.LocalDateTime;
 import java.util.*;
 
 import javax.mail.Authenticator;
@@ -19,8 +20,11 @@ import com.turnero.dto.DocenteDto;
 import com.turnero.dto.ItemDto;
 import com.turnero.entity.Personal;
 import com.turnero.entity.ReciboEnviado;
+import com.turnero.entity.ReciboIdentificado;
 import com.turnero.entity.ReciboSinIdentificar;
+import com.turnero.repository.PersonalRepository;
 import com.turnero.repository.ReciboEnviadoRepository;
+import com.turnero.repository.ReciboIdentificadoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -60,19 +64,26 @@ public class MailServiceImp {
 	@Autowired
 	private ReciboEnviadoRepository reciboEnviadoRepository;
 
-	  public void sendSimpleMail(Personal personal, ReciboSinIdentificar recibo) {
+	@Autowired
+	private PersonalRepository personalRepository;
+
+	@Autowired
+	private ReciboIdentificadoRepository reciboIdentificadoRepository;
+
+	  public void enviarReciboIndividual(Personal personal, ReciboSinIdentificar recibo) {
 		    Session session = Session.getDefaultInstance(getProperties(), config);
 		    try {
-			  String msgBody = "correo de prueba envio de archivo: ";
 		      Message msg = new MimeMessage(session);
-		      msg.setFrom(new InternetAddress(emailUser, "Secretaria"));
-		      msg.addRecipient(Message.RecipientType.TO, new InternetAddress(personal.getEmail(), personal.getEmail()));
+		      msg.setFrom(new InternetAddress(emailUser));
+		      msg.addRecipient(Message.RecipientType.TO, new InternetAddress(personal.getEmail()));
 		      msg.setSubject("Recibo De Sueldo");
-		      msg.setText(msgBody);
+		      MimeBodyPart textPart = new MimeBodyPart();
+			  textPart.setText("");
 
 			  String UrlRecibo = path.concat("/").concat(recibo.getFileName());
 			  String htmlBody = "";
 			  Multipart mp = new MimeMultipart();
+			  mp.addBodyPart(textPart);
 
 			  MimeBodyPart htmlPart = new MimeBodyPart();
 			  htmlPart.setContent(htmlBody, "text/html");
@@ -90,8 +101,9 @@ public class MailServiceImp {
 			  ReciboEnviado reciboEnviado = new ReciboEnviado();
 			  reciboEnviado.setPersonal(personal);
 			  reciboEnviado.setFileName(recibo.getFileName());
-			//reciboEnviado.setFecha();
-              reciboEnviadoRepository.save(reciboEnviado);
+			  LocalDateTime fecha = LocalDateTime.now();
+			  reciboEnviado.setFecha(fecha);
+			  reciboEnviadoRepository.save(reciboEnviado);
 
 
 			} catch (AddressException e) {
@@ -106,43 +118,51 @@ public class MailServiceImp {
           // [END simple_example]
 		  }
 
-		  public void sendMultipartMail(List<DocenteDto> docenteDto) {
+		  public void enviarVariosRecibos(DocenteDto docenteDto) {
 			Session session = Session.getDefaultInstance(getProperties(), config);
-		    String msgBody = "correo de prueba envio de archivo: ";
 		    try {
 		      Message msg = new MimeMessage(session);
-		      msg.setFrom(new InternetAddress(emailUser, "Secretaria"));
-			  //String htmlBody = "";
+		      msg.setFrom(new InternetAddress(emailUser));
+			  msg.setSubject("Recibos De sueldo:");
+			  MimeBodyPart textPart = new MimeBodyPart();
+			  textPart.setText("esto es una texto de prueba");
 			  Multipart mp = new MimeMultipart();
-			  //MimeBodyPart htmlPart = new MimeBodyPart();
-			  //htmlPart.setContent(htmlBody, "text/html");
-			  //mp.addBodyPart(htmlPart);
+			  mp.addBodyPart(textPart);
+			  msg.addRecipient(Message.RecipientType.TO,new InternetAddress(docenteDto.getEmail()));
 
-			  for (DocenteDto docenteDtos :docenteDto) {
-				  msg.addRecipient(Message.RecipientType.TO,new InternetAddress(docenteDtos.getEmail(), docenteDtos.getEmail()));
-				  msg.setSubject("Your Example.com account has been activated");
-				  msg.setText(msgBody);
-				  for (ItemDto items: docenteDtos.getItemDto()) {
-						MimeBodyPart attachment = new MimeBodyPart();
-						attachment.attachFile(new File(path.concat("/").concat(items.getArchivo())), "application/pdf", null);
-						attachment.setFileName(items.getArchivo());
-						mp.addBodyPart(attachment);
+				  for (ItemDto items: docenteDto.getItemDto()) {
+					  boolean identificado = false;
 
-						Date fechaDate = new Date();
-					  	Calendar fecha = new GregorianCalendar();
-						  String dia = Integer.toString(fecha.get(Calendar.DATE));
-						  //String hora = Integer.toString(fecha.get(Calendar.))
-					  	ReciboEnviado reciboEnviado = new ReciboEnviado();
-					  //reciboEnviado.setPersonal(personal);
-					  	reciboEnviado.setFileName(items.getArchivo());
-					    reciboEnviado.setFecha(fechaDate);
-					  	reciboEnviadoRepository.save(reciboEnviado);
+					for (ReciboIdentificado reciboIdentificado : reciboIdentificadoRepository.findAll()){
+						if(reciboIdentificado.getPersonal().getId().equals(docenteDto.getId()) && reciboIdentificado.getRecibo().equals(items.getArchivo())){
+							  identificado = true;
+
+							  break;
+
+						 }
+
+					}
+					 if(identificado){
+						 Optional<Personal> docente = personalRepository.findById(docenteDto.getId());
+						  MimeBodyPart attachment = new MimeBodyPart();
+						  attachment.attachFile(new File(path.concat("/").concat(items.getArchivo())), "application/pdf", null);
+						  attachment.setFileName(items.getArchivo());
+						  mp.addBodyPart(attachment);
+						  ReciboEnviado reciboEnviado = new ReciboEnviado();
+						  LocalDateTime fecha = LocalDateTime.now();
+						  reciboEnviado.setPersonal(docente.get());
+						  reciboEnviado.setFileName(items.getArchivo());
+						  reciboEnviado.setFecha(fecha);
+						  reciboEnviadoRepository.save(reciboEnviado);
+
+						  items.setEnviado(Boolean.TRUE);
+				  	 }
+
+
 				  }
 				  msg.setContent(mp);
 				  Transport.send(msg);
 
-
-			  }
 
 		    } catch (AddressException e) {
 		      // ...
@@ -154,6 +174,53 @@ public class MailServiceImp {
 				throw new RuntimeException(e);
 			}
           }
+	public void enviarArchivo(DocenteDto docenteDto) {
+		Session session = Session.getDefaultInstance(getProperties(), config);
+		try {
+			Message msg = new MimeMessage(session);
+			msg.setFrom(new InternetAddress(emailUser));
+			msg.setSubject("Recibos De sueldo:");
+			MimeBodyPart textPart = new MimeBodyPart();
+			textPart.setText("esto es una texto de prueba");
+			Multipart mp = new MimeMultipart();
+			mp.addBodyPart(textPart);
+			msg.addRecipient(Message.RecipientType.TO,new InternetAddress(docenteDto.getEmail()));
+
+			for (ItemDto items: docenteDto.getItemDto()) {
+
+
+					MimeBodyPart attachment = new MimeBodyPart();
+					attachment.attachFile(new File(path.concat("/").concat(items.getArchivo())), "application/pdf", null);
+					attachment.setFileName(items.getArchivo());
+					mp.addBodyPart(attachment);
+
+					/*LocalDateTime fecha = LocalDateTime.now();
+					reciboEnviado.setFileName(items.getArchivo());
+					reciboEnviado.setFecha(fecha);
+					reciboEnviadoRepository.save(reciboEnviado);
+
+					items.setEnviado(Boolean.TRUE);
+
+					 */
+
+
+
+			}
+			msg.setContent(mp);
+			Transport.send(msg);
+
+
+		} catch (AddressException e) {
+			// ...
+		} catch (MessagingException e) {
+			// ...
+		} catch (UnsupportedEncodingException e) {
+			// ...
+		} catch (IOException e) {
+			throw new RuntimeException(e);
+		}
+	}
+
 
 
 	

@@ -11,7 +11,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import com.turnero.service.DirectoryReaderService;
+import com.turnero.service.ArchivoLecturaService;
 
 import javax.validation.Valid;
 
@@ -19,17 +19,17 @@ import javax.validation.Valid;
 @RestController
 @RequestMapping(value = "/msdeliver")
 @CrossOrigin(origins = "http://localhost:4200")
-public class DeliverResource {
+public class ArchivoController {
 
 	@Autowired
-	private DirectoryReaderService directoryReaderService;	
+	private ArchivoLecturaService directoryReaderService;
 
 	
 	
 	@GetMapping(value =  "/archivos/nombres" , produces = { MediaType.APPLICATION_JSON_VALUE,
 			MediaType.APPLICATION_PROBLEM_JSON_VALUE })
 	public ResponseEntity<Set<ReciboSinIdentificar>>  listarArchivos() throws Exception {
-		return new ResponseEntity<>(directoryReaderService.getFileName(),HttpStatus.OK);
+		return new ResponseEntity<>(directoryReaderService.leerArchivo(),HttpStatus.OK);
 	}
 	
 	
@@ -39,12 +39,12 @@ public class DeliverResource {
 		return new ResponseEntity<>(directoryReaderService.machear(recibosSinIdentificar),HttpStatus.OK);
 	}
 
-	/*@PostMapping(value =  "/archivos/patron")
+	@PostMapping(value =  "/archivos/patron")
 	public ResponseEntity<Void>  asdas(){
 		directoryReaderService.patron();
 		return new ResponseEntity<>(HttpStatus.OK);
 
-	}*/
+	}
 	@PostMapping(value = "/pdf")
 	public ResponseEntity<Void> pdf(){
 		directoryReaderService.crearPDF();

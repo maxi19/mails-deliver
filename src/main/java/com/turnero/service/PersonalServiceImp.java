@@ -48,7 +48,7 @@ public class PersonalServiceImp implements PersonalService {
 	}
 
 	@Override
-	public Personal buscarPersonal(UUID id) throws Exception {
+	public Personal buscarPersonal(Integer id) throws Exception {
 		Optional<Personal> optPersonal =personalRepository.findById(id);
 		if (optPersonal.isEmpty()) {
 			throw new Exception("la persona no existe");
@@ -57,7 +57,7 @@ public class PersonalServiceImp implements PersonalService {
 	}
 
 	@Override
-	public void eliminarPersonal(UUID id) throws Exception {
+	public void eliminarPersonal(Integer id) throws Exception {
 		try {
 			Personal personaBuscada  = this.buscarPersonal(id);
 			personalRepository.delete(personaBuscada);
