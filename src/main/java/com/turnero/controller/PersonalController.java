@@ -52,7 +52,7 @@ public class PersonalController {
 	}
 	@GetMapping(value =  "/buscarPersonal/{id}" , produces = { MediaType.APPLICATION_JSON_VALUE,
 			MediaType.APPLICATION_PROBLEM_JSON_VALUE })
-	public ResponseEntity<Personal>  prueba2(@PathVariable Integer id  ) throws Exception {
+	public ResponseEntity<Personal> buscarPersonal(@PathVariable Integer id  ) throws Exception {
 		Personal p = personalService.buscarPersonal(id);
 		return new ResponseEntity<Personal>(p,HttpStatus.OK);
 	}

@@ -23,12 +23,12 @@ import com.turnero.entity.Personal;
 import com.turnero.entity.ReciboSinIdentificar;
 
 @Service
-public class ArchivoLecturaServiceImp implements ArchivoLecturaService {
+public class ReciboSinIdentificarServiceImp implements ReciboSinIdentificarService {
 
 	@Value("${config.path.recibos}")
 	private String path;
 	
-    private static final Logger logger = LoggerFactory.getLogger(ArchivoLecturaServiceImp.class);
+    private static final Logger logger = LoggerFactory.getLogger(ReciboSinIdentificarServiceImp.class);
 
 
 	
@@ -88,7 +88,7 @@ public class ArchivoLecturaServiceImp implements ArchivoLecturaService {
 	}
 
 	@Override
-	public Set<ReciboSinIdentificar> leerArchivo() throws Exception {
+	public Set<ReciboSinIdentificar> leerArchivos() throws Exception {
 
 		Set<ReciboSinIdentificar> recibosSinIdentificar = new HashSet<ReciboSinIdentificar>();
 
@@ -114,14 +114,15 @@ public class ArchivoLecturaServiceImp implements ArchivoLecturaService {
 
 	@Override
 	public List<DocenteDto> machear(List<ReciboSinIdentificar> recibosSinIdenticar) throws Exception {
-
 		Map<String, String> mapa = new HashMap<>();
 
 		//obtenemos la lista de nombres y su padron para obtener los archivos
 		List<DocenteDto> docentesDto = new ArrayList<DocenteDto>();
 
 		//Iterable<ReciboSinIdentificar> recibos = recibosSinIdentificarRepository.findAll();
+
 		List<ItemDto> items = null;
+		reciboIdentificadoRepository.deleteAll();
 		for (Personal personal : personalRepository.findAll()) {
 			logger.info("el usuario {} , tiene los siguientes archivos ", personal.getNombres().concat(",").concat(personal.getApellidos()));
 			DocenteDto docente = new DocenteDto();
@@ -131,6 +132,8 @@ public class ArchivoLecturaServiceImp implements ArchivoLecturaService {
 			docente.setEmail(personal.getEmail());
 			ItemDto item = null;
 			items = new ArrayList<ItemDto>();
+
+
 			for (ReciboSinIdentificar reciboSinIdentificar : recibosSinIdenticar) {
 				this.pattern = Pattern.compile(personal.getPatron());
 				this.matcher = pattern.matcher(reciboSinIdentificar.getFileName().replaceAll(" ", ""));
@@ -145,11 +148,11 @@ public class ArchivoLecturaServiceImp implements ArchivoLecturaService {
 					if(!enviado){
 						item = new ItemDto();
 						logger.info(path.concat(matcher.group()));
-						reciboIdentificadoRepository.deleteAll();
+						
 						ReciboIdentificado reciboIdentificado = new ReciboIdentificado();
-						//reciboIdentificado.setPersonal(personal);
 						reciboIdentificado.setRecibo(reciboSinIdentificar.getFileName());
 						reciboIdentificado.setPersonal(personal);
+
 						item.setArchivo(reciboSinIdentificar.getFileName());
 						item.setEnviado(Boolean.FALSE);
 						items.add(item);

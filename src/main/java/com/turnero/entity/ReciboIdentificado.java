@@ -11,10 +11,10 @@ public class ReciboIdentificado {
     @GeneratedValue(strategy= GenerationType.IDENTITY)
     private Integer id;
 
-    @Column()
+
     private String recibo;
 
-   @ManyToOne(optional = false, cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+   @ManyToOne(optional = false, fetch = FetchType.LAZY)
    @JoinColumn(name = "personal", referencedColumnName = "id")
     private Personal personal;
 }

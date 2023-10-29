@@ -6,9 +6,9 @@ import com.turnero.entity.ReciboSinIdentificar;
 import java.util.List;
 import java.util.Set;
 
-public interface ArchivoLecturaService {
+public interface ReciboSinIdentificarService {
 
-	public Set<ReciboSinIdentificar> leerArchivo() throws Exception;
+	public Set<ReciboSinIdentificar> leerArchivos() throws Exception;
 
 
 	public List<DocenteDto> machear(List<ReciboSinIdentificar> reciboSinIdentificarse) throws Exception;

@@ -11,7 +11,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import com.turnero.service.ArchivoLecturaService;
+import com.turnero.service.ReciboSinIdentificarService;
 
 import javax.validation.Valid;
 
@@ -19,21 +19,17 @@ import javax.validation.Valid;
 @RestController
 @RequestMapping(value = "/msdeliver")
 @CrossOrigin(origins = "http://localhost:4200")
-public class ArchivoController {
+public class ReciboSinIdentificarController {
 
 	@Autowired
-	private ArchivoLecturaService directoryReaderService;
+	private ReciboSinIdentificarService directoryReaderService;
 
-	
-	
 	@GetMapping(value =  "/archivos/nombres" , produces = { MediaType.APPLICATION_JSON_VALUE,
 			MediaType.APPLICATION_PROBLEM_JSON_VALUE })
 	public ResponseEntity<Set<ReciboSinIdentificar>>  listarArchivos() throws Exception {
-		return new ResponseEntity<>(directoryReaderService.leerArchivo(),HttpStatus.OK);
+		return new ResponseEntity<>(directoryReaderService.leerArchivos(),HttpStatus.OK);
 	}
-	
-	
-	
+
 	@PostMapping(value =  "/archivos/machear" , produces = { MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_PROBLEM_JSON_VALUE })
 	public ResponseEntity<List<DocenteDto>>  machearArchivos(@Valid @RequestBody List<ReciboSinIdentificar> recibosSinIdentificar) throws Exception {
 		return new ResponseEntity<>(directoryReaderService.machear(recibosSinIdentificar),HttpStatus.OK);

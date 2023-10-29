@@ -31,7 +31,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Component;
 
 @Component
-public class MailServiceImp {
+public class MailServiceImp implements MailService{
 
 	@Value("${config.path.recibos}")
 	private String path;
@@ -70,7 +70,7 @@ public class MailServiceImp {
 	@Autowired
 	private ReciboIdentificadoRepository reciboIdentificadoRepository;
 
-	  public void enviarReciboIndividual(Personal personal, ReciboSinIdentificar recibo) {
+	  public void enviarSinMatch(Personal personal, ReciboSinIdentificar recibo) {
 		    Session session = Session.getDefaultInstance(getProperties(), config);
 		    try {
 		      Message msg = new MimeMessage(session);
@@ -97,7 +97,6 @@ public class MailServiceImp {
 			  msg.setContent(mp);
 			  Transport.send(msg);
 
-
 			  ReciboEnviado reciboEnviado = new ReciboEnviado();
 			  reciboEnviado.setPersonal(personal);
 			  reciboEnviado.setFileName(recibo.getFileName());
@@ -118,7 +117,7 @@ public class MailServiceImp {
           // [END simple_example]
 		  }
 
-		  public void enviarVariosRecibos(DocenteDto docenteDto) {
+		  public void enviarRecibos(DocenteDto docenteDto) {
 			Session session = Session.getDefaultInstance(getProperties(), config);
 		    try {
 		      Message msg = new MimeMessage(session);
@@ -129,39 +128,36 @@ public class MailServiceImp {
 			  Multipart mp = new MimeMultipart();
 			  mp.addBodyPart(textPart);
 			  msg.addRecipient(Message.RecipientType.TO,new InternetAddress(docenteDto.getEmail()));
+			  Optional<Personal> docente = personalRepository.findById(docenteDto.getId());
+			  List<ItemDto> recibosEnviados = new ArrayList<>();
+			  for (ItemDto items: docenteDto.getItemDto()) {
+				boolean identificado = false;
+				for (ReciboIdentificado reciboIdentificado : reciboIdentificadoRepository.findAll()){
+					if(reciboIdentificado.getPersonal().getId().equals(docenteDto.getId()) && reciboIdentificado.getRecibo().equals(items.getArchivo())){
+						  identificado = true;
+						  break;
+				    }
+				}
+				if(identificado){
+					MimeBodyPart attachment = new MimeBodyPart();
+					attachment.attachFile(new File(path.concat("/").concat(items.getArchivo())), "application/pdf", null);
+					attachment.setFileName(items.getArchivo());
+					mp.addBodyPart(attachment);
+					items.setEnviado(Boolean.TRUE);
+					recibosEnviados.add(items);
+				}
+			  }
+			  msg.setContent(mp);
+			  Transport.send(msg);
 
-				  for (ItemDto items: docenteDto.getItemDto()) {
-					  boolean identificado = false;
-
-					for (ReciboIdentificado reciboIdentificado : reciboIdentificadoRepository.findAll()){
-						if(reciboIdentificado.getPersonal().getId().equals(docenteDto.getId()) && reciboIdentificado.getRecibo().equals(items.getArchivo())){
-							  identificado = true;
-
-							  break;
-
-						 }
-
-					}
-					 if(identificado){
-						 Optional<Personal> docente = personalRepository.findById(docenteDto.getId());
-						  MimeBodyPart attachment = new MimeBodyPart();
-						  attachment.attachFile(new File(path.concat("/").concat(items.getArchivo())), "application/pdf", null);
-						  attachment.setFileName(items.getArchivo());
-						  mp.addBodyPart(attachment);
-						  ReciboEnviado reciboEnviado = new ReciboEnviado();
-						  LocalDateTime fecha = LocalDateTime.now();
-						  reciboEnviado.setPersonal(docente.get());
-						  reciboEnviado.setFileName(items.getArchivo());
-						  reciboEnviado.setFecha(fecha);
-						  reciboEnviadoRepository.save(reciboEnviado);
-
-						  items.setEnviado(Boolean.TRUE);
-				  	 }
-
-
-				  }
-				  msg.setContent(mp);
-				  Transport.send(msg);
+			  for (ItemDto recibo: recibosEnviados) {
+				ReciboEnviado reciboEnviado = new ReciboEnviado();
+				LocalDateTime fecha = LocalDateTime.now();
+				reciboEnviado.setPersonal(docente.get());
+				reciboEnviado.setFileName(recibo.getArchivo());
+				reciboEnviado.setFecha(fecha);
+				reciboEnviadoRepository.save(reciboEnviado);
+			  }
 
 
 		    } catch (AddressException e) {
@@ -174,40 +170,37 @@ public class MailServiceImp {
 				throw new RuntimeException(e);
 			}
           }
-	public void enviarArchivo(DocenteDto docenteDto) {
+	public void enviarRecibo(DocenteDto docenteDto, int idItem) {
 		Session session = Session.getDefaultInstance(getProperties(), config);
 		try {
+
 			Message msg = new MimeMessage(session);
 			msg.setFrom(new InternetAddress(emailUser));
-			msg.setSubject("Recibos De sueldo:");
+			msg.setSubject("Recibo De sueldo:");
 			MimeBodyPart textPart = new MimeBodyPart();
 			textPart.setText("esto es una texto de prueba");
+
 			Multipart mp = new MimeMultipart();
 			mp.addBodyPart(textPart);
+
+			ItemDto reciboAEnviar = docenteDto.getItemDto().get(idItem);
+
 			msg.addRecipient(Message.RecipientType.TO,new InternetAddress(docenteDto.getEmail()));
+			MimeBodyPart attachment = new MimeBodyPart();
+			attachment.attachFile(new File(path.concat("/").concat(reciboAEnviar.getArchivo())), "application/pdf", null);
+			attachment.setFileName(docenteDto.getItemDto().get(idItem).getArchivo());
+			mp.addBodyPart(attachment);
 
-			for (ItemDto items: docenteDto.getItemDto()) {
-
-
-					MimeBodyPart attachment = new MimeBodyPart();
-					attachment.attachFile(new File(path.concat("/").concat(items.getArchivo())), "application/pdf", null);
-					attachment.setFileName(items.getArchivo());
-					mp.addBodyPart(attachment);
-
-					/*LocalDateTime fecha = LocalDateTime.now();
-					reciboEnviado.setFileName(items.getArchivo());
-					reciboEnviado.setFecha(fecha);
-					reciboEnviadoRepository.save(reciboEnviado);
-
-					items.setEnviado(Boolean.TRUE);
-
-					 */
-
-
-
-			}
 			msg.setContent(mp);
 			Transport.send(msg);
+
+			Optional<Personal> docente = personalRepository.findById(docenteDto.getId());
+			ReciboEnviado reciboEnviado = new ReciboEnviado();
+			LocalDateTime fecha = LocalDateTime.now();
+			reciboEnviado.setPersonal(docente.get());
+			reciboEnviado.setFileName(docenteDto.getItemDto().get(idItem).getArchivo());
+			reciboEnviado.setFecha(fecha);
+			reciboEnviadoRepository.save(reciboEnviado);
 
 
 		} catch (AddressException e) {

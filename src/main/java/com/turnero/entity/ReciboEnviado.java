@@ -27,7 +27,7 @@ public class ReciboEnviado {
 	private Long id;
 	
 	
-	@ManyToOne (optional = false, cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+	@ManyToOne (optional = false, fetch = FetchType.LAZY)
 	@JoinColumn(name = "personal_id", referencedColumnName = "id")
 	private Personal personal;
 	
