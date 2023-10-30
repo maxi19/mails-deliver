@@ -22,28 +22,28 @@ import javax.validation.Valid;
 public class ReciboSinIdentificarController {
 
 	@Autowired
-	private ReciboSinIdentificarService directoryReaderService;
+	private ReciboSinIdentificarService ReciboSinIdentificarService;
 
 	@GetMapping(value =  "/archivos/nombres" , produces = { MediaType.APPLICATION_JSON_VALUE,
 			MediaType.APPLICATION_PROBLEM_JSON_VALUE })
 	public ResponseEntity<Set<ReciboSinIdentificar>>  listarArchivos() throws Exception {
-		return new ResponseEntity<>(directoryReaderService.leerArchivos(),HttpStatus.OK);
+		return new ResponseEntity<>(ReciboSinIdentificarService.leerArchivos(),HttpStatus.OK);
 	}
 
 	@PostMapping(value =  "/archivos/machear" , produces = { MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_PROBLEM_JSON_VALUE })
 	public ResponseEntity<List<DocenteDto>>  machearArchivos(@Valid @RequestBody List<ReciboSinIdentificar> recibosSinIdentificar) throws Exception {
-		return new ResponseEntity<>(directoryReaderService.machear(recibosSinIdentificar),HttpStatus.OK);
+		return new ResponseEntity<>(ReciboSinIdentificarService.machear(recibosSinIdentificar),HttpStatus.OK);
 	}
 
 	@PostMapping(value =  "/archivos/patron")
 	public ResponseEntity<Void>  asdas(){
-		directoryReaderService.patron();
+		ReciboSinIdentificarService.patron();
 		return new ResponseEntity<>(HttpStatus.OK);
 
 	}
 	@PostMapping(value = "/pdf")
 	public ResponseEntity<Void> pdf(){
-		directoryReaderService.crearPDF();
+		ReciboSinIdentificarService.crearPDF();
 		return new ResponseEntity<>(HttpStatus.OK);
 	}
 

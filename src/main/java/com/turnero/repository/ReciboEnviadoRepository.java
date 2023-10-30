@@ -1,13 +1,14 @@
 package com.turnero.repository;
 
-import com.turnero.entity.ReciboEnviado;
+import com.turnero.dto.ReciboEnviado;
+import com.turnero.service.MailServiceImp;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 
 import java.util.Optional;
-import java.util.UUID;
-@Repository
-public interface ReciboEnviadoRepository extends CrudRepository<ReciboEnviado, Long> {
 
-    Optional<ReciboEnviado> findById(Long id);
+@Repository
+public interface ReciboEnviadoRepository extends CrudRepository<ReciboEnviado, Integer> {
+
+    Optional<ReciboEnviado> findById(Integer id);
 }

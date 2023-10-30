@@ -45,6 +45,7 @@ public class PersonalController {
 
 
 	@GetMapping(value =  "/eliminarPersonal/{id}" , produces = { MediaType.APPLICATION_JSON_VALUE,
+
 			MediaType.APPLICATION_PROBLEM_JSON_VALUE })
 	public ResponseEntity<Void>  eliminar(@PathVariable Integer id  ) throws Exception {
 		personalService.eliminarPersonal(id);
@@ -58,9 +59,8 @@ public class PersonalController {
 	}
 
 
-	@GetMapping(value =  "/listar" , produces = { MediaType.APPLICATION_JSON_VALUE,
-			MediaType.APPLICATION_PROBLEM_JSON_VALUE })
-	public ResponseEntity<List<Personal>>  personas() throws Exception {
+	@GetMapping(value =  "/listar" , produces = { MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_PROBLEM_JSON_VALUE })
+	public ResponseEntity<List<Personal>>  listar() throws Exception {
 		List<Personal> personal = new ArrayList<Personal>();
 		for (Personal personaEntity : personalService.listar()) {
 			personal.add(personaEntity);

@@ -1,37 +1,48 @@
 package com.turnero.controller;
 
-import com.turnero.entity.ReciboEnviado;
-import com.turnero.entity.ReciboIdentificado;
+import com.turnero.dto.ReciboEnviado;
+import com.turnero.service.MailServiceImp;
+import com.turnero.service.ReciboEnviadoService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Repository;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
-import javax.print.attribute.standard.Media;
+import javax.validation.Valid;
+import java.util.ArrayList;
 import java.util.List;
 
 @RestController
-@RequestMapping(value = "/reciboEnviado")
+@RequestMapping(value = "/recibo/enviado")
 public class ReciboEnviadoController {
-    @GetMapping(value = "/listarRecibosEnviado", produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_PROBLEM_JSON_VALUE})
-    public ResponseEntity<ReciboEnviado> listarRecibosEnviados(){
-        return null;
+
+    @Autowired
+    private ReciboEnviadoService reciboEnviadoService;
+
+    @GetMapping(value = "/listar", produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_PROBLEM_JSON_VALUE})
+    public ResponseEntity<List<ReciboEnviado>> listarRecibos() throws Exception {
+        List<ReciboEnviado> recibos= new ArrayList<>();
+        for (ReciboEnviado reciboEnviado: reciboEnviadoService.listarRecibos()) {
+            recibos.add(reciboEnviado);
+        }
+        return new ResponseEntity<>(recibos,HttpStatus.OK);
     }
-    @PostMapping(value = "/eliminar/recibosEnviados", produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_PROBLEM_JSON_VALUE})
-    public ResponseEntity<Void> eliminarRecibosEnviados(List<ReciboEnviado> reciboEnviados){
-        return null;
+    @PostMapping(value = "/eliminar/recibos", produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_PROBLEM_JSON_VALUE})
+    public ResponseEntity<Void> eliminarRecibosEnviados(@Valid @RequestBody List<ReciboEnviado> reciboEnviados) throws Exception{
+        reciboEnviadoService.eliminarVarios(reciboEnviados);
+        return new ResponseEntity<>(HttpStatus.OK);
     }
-    @PostMapping(value = "/eliminar/reciboEnviado/{id}", produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_PROBLEM_JSON_VALUE})
-    public ResponseEntity<Void> eliminarReciboEnviado(ReciboEnviado reciboEnviado){
-        return null;
+    @GetMapping(value = "/eliminar/{id}", produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_PROBLEM_JSON_VALUE})
+    public ResponseEntity<Void> eliminarReciboEnviado(@PathVariable Integer id) throws Exception{
+        reciboEnviadoService.eliminarIndividual(id);
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 
-    @PostMapping(value = "/eliminar/todosRecibosEnviado", produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_PROBLEM_JSON_VALUE})
-    public ResponseEntity<Void> eliminarTodos(){
-        return null;
+    @PostMapping(value = "/eliminar/todos", produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_PROBLEM_JSON_VALUE})
+    public ResponseEntity<Void> eliminarTodos() throws Exception {
+        reciboEnviadoService.eliminarTodos();
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 
 }

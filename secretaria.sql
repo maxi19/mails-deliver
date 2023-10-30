@@ -29,7 +29,7 @@ CREATE TABLE `personal` (
   `nombres` varchar(255) DEFAULT NULL,
   `patron` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=108 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=110 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -57,7 +57,7 @@ CREATE TABLE `recibo_enviado` (
   PRIMARY KEY (`id`),
   KEY `FK6fth0jy50i7krf1l082eh9105` (`personal_id`),
   CONSTRAINT `FK6fth0jy50i7krf1l082eh9105` FOREIGN KEY (`personal_id`) REFERENCES `personal` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=32 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -83,7 +83,7 @@ CREATE TABLE `recibo_identificado` (
   PRIMARY KEY (`id`),
   KEY `FKm4m068un3v6c03rxnb2ofusn3` (`personal`),
   CONSTRAINT `FKm4m068un3v6c03rxnb2ofusn3` FOREIGN KEY (`personal`) REFERENCES `personal` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=13 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -106,7 +106,7 @@ CREATE TABLE `recibo_sin_identificar` (
   `id` int NOT NULL AUTO_INCREMENT,
   `file_name` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=841 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -115,6 +115,7 @@ CREATE TABLE `recibo_sin_identificar` (
 
 LOCK TABLES `recibo_sin_identificar` WRITE;
 /*!40000 ALTER TABLE `recibo_sin_identificar` DISABLE KEYS */;
+INSERT INTO `recibo_sin_identificar` VALUES (1,'BLANCO DAVALOS,ALEJANDRO FACUNDO_recibo1.pdf'),(2,'BLANCO DAVALOS,ALEJANDRO FACUNDO_recibo2.pdf'),(3,'BLANCO DAVALOS,JOAQUIN RENE_recibo1.pdf'),(4,'BLANCO DAVALOS,JOAQUIN RENE_recibo2.pdf');
 /*!40000 ALTER TABLE `recibo_sin_identificar` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -127,4 +128,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2023-10-27 14:27:38
+-- Dump completed on 2023-10-30  1:58:43

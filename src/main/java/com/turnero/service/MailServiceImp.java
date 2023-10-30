@@ -15,16 +15,19 @@ import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeBodyPart;
 import javax.mail.internet.MimeMessage;
 import javax.mail.internet.MimeMultipart;
+import javax.persistence.*;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.turnero.dto.DocenteDto;
 import com.turnero.dto.ItemDto;
+import com.turnero.dto.ReciboEnviado;
 import com.turnero.entity.Personal;
-import com.turnero.entity.ReciboEnviado;
 import com.turnero.entity.ReciboIdentificado;
 import com.turnero.entity.ReciboSinIdentificar;
 import com.turnero.repository.PersonalRepository;
 import com.turnero.repository.ReciboEnviadoRepository;
 import com.turnero.repository.ReciboIdentificadoRepository;
+import lombok.Data;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -99,7 +102,7 @@ public class MailServiceImp implements MailService{
 
 			  ReciboEnviado reciboEnviado = new ReciboEnviado();
 			  reciboEnviado.setPersonal(personal);
-			  reciboEnviado.setFileName(recibo.getFileName());
+			  reciboEnviado.setNombre(recibo.getFileName());
 			  LocalDateTime fecha = LocalDateTime.now();
 			  reciboEnviado.setFecha(fecha);
 			  reciboEnviadoRepository.save(reciboEnviado);
@@ -133,7 +136,7 @@ public class MailServiceImp implements MailService{
 			  for (ItemDto items: docenteDto.getItemDto()) {
 				boolean identificado = false;
 				for (ReciboIdentificado reciboIdentificado : reciboIdentificadoRepository.findAll()){
-					if(reciboIdentificado.getPersonal().getId().equals(docenteDto.getId()) && reciboIdentificado.getRecibo().equals(items.getArchivo())){
+					if(reciboIdentificado.getPersonal().getId().equals(docenteDto.getId()) && reciboIdentificado.getNombre().equals(items.getArchivo())){
 						  identificado = true;
 						  break;
 				    }
@@ -154,7 +157,7 @@ public class MailServiceImp implements MailService{
 				ReciboEnviado reciboEnviado = new ReciboEnviado();
 				LocalDateTime fecha = LocalDateTime.now();
 				reciboEnviado.setPersonal(docente.get());
-				reciboEnviado.setFileName(recibo.getArchivo());
+				reciboEnviado.setNombre(recibo.getArchivo());
 				reciboEnviado.setFecha(fecha);
 				reciboEnviadoRepository.save(reciboEnviado);
 			  }
@@ -198,7 +201,7 @@ public class MailServiceImp implements MailService{
 			ReciboEnviado reciboEnviado = new ReciboEnviado();
 			LocalDateTime fecha = LocalDateTime.now();
 			reciboEnviado.setPersonal(docente.get());
-			reciboEnviado.setFileName(docenteDto.getItemDto().get(idItem).getArchivo());
+			reciboEnviado.setNombre(docenteDto.getItemDto().get(idItem).getArchivo());
 			reciboEnviado.setFecha(fecha);
 			reciboEnviadoRepository.save(reciboEnviado);
 
@@ -216,5 +219,4 @@ public class MailServiceImp implements MailService{
 
 
 
-	
 }

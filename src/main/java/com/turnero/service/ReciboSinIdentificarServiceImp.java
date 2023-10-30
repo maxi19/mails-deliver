@@ -10,7 +10,7 @@ import java.util.regex.Pattern;
 
 import com.turnero.dto.DocenteDto;
 import com.turnero.dto.ItemDto;
-import com.turnero.entity.ReciboEnviado;
+import com.turnero.dto.ReciboEnviado;
 import com.turnero.entity.ReciboIdentificado;
 import com.turnero.repository.*;
 import org.slf4j.Logger;
@@ -140,7 +140,7 @@ public class ReciboSinIdentificarServiceImp implements ReciboSinIdentificarServi
 				while (matcher.find()) {
 					boolean enviado =false;
 					for (ReciboEnviado reciboEnviados:reciboEnviadoRepository.findAll()) {
-						if(reciboEnviados.getFileName().equals(reciboSinIdentificar.getFileName())){
+						if(reciboEnviados.getNombre().equals(reciboSinIdentificar.getFileName())){
 							enviado = true;
 							break;
 						}
@@ -150,7 +150,7 @@ public class ReciboSinIdentificarServiceImp implements ReciboSinIdentificarServi
 						logger.info(path.concat(matcher.group()));
 						
 						ReciboIdentificado reciboIdentificado = new ReciboIdentificado();
-						reciboIdentificado.setRecibo(reciboSinIdentificar.getFileName());
+						reciboIdentificado.setNombre(reciboSinIdentificar.getFileName());
 						reciboIdentificado.setPersonal(personal);
 
 						item.setArchivo(reciboSinIdentificar.getFileName());
