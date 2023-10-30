@@ -1,6 +1,6 @@
 package com.turnero.service;
 
-import com.turnero.dto.ReciboEnviado;
+import com.turnero.entity.ReciboEnviado;
 import com.turnero.repository.ReciboEnviadoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

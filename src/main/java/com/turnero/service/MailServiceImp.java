@@ -15,19 +15,13 @@ import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeBodyPart;
 import javax.mail.internet.MimeMessage;
 import javax.mail.internet.MimeMultipart;
-import javax.persistence.*;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.turnero.dto.DocenteDto;
-import com.turnero.dto.ItemDto;
-import com.turnero.dto.ReciboEnviado;
+import com.turnero.entity.ReciboEnviado;
 import com.turnero.entity.Personal;
-import com.turnero.entity.ReciboIdentificado;
 import com.turnero.entity.ReciboSinIdentificar;
 import com.turnero.repository.PersonalRepository;
 import com.turnero.repository.ReciboEnviadoRepository;
 import com.turnero.repository.ReciboIdentificadoRepository;
-import lombok.Data;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -120,7 +114,7 @@ public class MailServiceImp implements MailService{
           // [END simple_example]
 		  }
 
-		  public void enviarRecibos(DocenteDto docenteDto) {
+		/*  public void enviarRecibos(DocenteDto docenteDto) {
 			Session session = Session.getDefaultInstance(getProperties(), config);
 		    try {
 		      Message msg = new MimeMessage(session);
@@ -215,7 +209,7 @@ public class MailServiceImp implements MailService{
 		} catch (IOException e) {
 			throw new RuntimeException(e);
 		}
-	}
+	}*/
 
 
 

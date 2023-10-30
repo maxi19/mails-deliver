@@ -1,7 +1,6 @@
 package com.turnero.repository;
 
-import com.turnero.dto.ReciboEnviado;
-import com.turnero.service.MailServiceImp;
+import com.turnero.entity.ReciboEnviado;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 

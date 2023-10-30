@@ -26,7 +26,7 @@ public class EmailController {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
-    @PostMapping(value = "/envio/varios", produces = { MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_PROBLEM_JSON_VALUE })
+   /* @PostMapping(value = "/envio/varios", produces = { MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_PROBLEM_JSON_VALUE })
     public ResponseEntity<Void> enviarArchivos(@Valid @RequestBody DocenteDto docenteDto) throws Exception{
         mailService.enviarRecibos(docenteDto);
         return new ResponseEntity<>(HttpStatus.OK);
@@ -36,5 +36,5 @@ public class EmailController {
     public ResponseEntity<Void> enviarIndividual(@Valid @RequestBody DocenteDto docenteDto, @PathVariable int numRecibo){
         mailService.enviarRecibo(docenteDto, numRecibo);
         return  new ResponseEntity<>(HttpStatus.OK);
-    }
+    }*/
 }

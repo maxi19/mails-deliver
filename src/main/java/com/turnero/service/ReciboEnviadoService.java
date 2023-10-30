@@ -1,6 +1,6 @@
 package com.turnero.service;
 
-import com.turnero.dto.ReciboEnviado;
+import com.turnero.entity.ReciboEnviado;
 
 import java.util.List;
 

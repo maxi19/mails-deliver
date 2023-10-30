@@ -1,7 +1,6 @@
 package com.turnero.controller;
 
-import com.turnero.dto.ReciboEnviado;
-import com.turnero.service.MailServiceImp;
+import com.turnero.entity.ReciboEnviado;
 import com.turnero.service.ReciboEnviadoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;

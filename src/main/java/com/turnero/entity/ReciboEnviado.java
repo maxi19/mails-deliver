@@ -1,4 +1,4 @@
-package com.turnero.dto;
+package com.turnero.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.turnero.entity.Personal;

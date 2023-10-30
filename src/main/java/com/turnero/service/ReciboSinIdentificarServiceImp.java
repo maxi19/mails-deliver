@@ -10,7 +10,7 @@ import java.util.regex.Pattern;
 
 import com.turnero.dto.DocenteDto;
 import com.turnero.dto.ItemDto;
-import com.turnero.dto.ReciboEnviado;
+import com.turnero.entity.ReciboEnviado;
 import com.turnero.entity.ReciboIdentificado;
 import com.turnero.repository.*;
 import org.slf4j.Logger;
