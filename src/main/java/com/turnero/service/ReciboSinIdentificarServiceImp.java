@@ -100,7 +100,7 @@ public class ReciboSinIdentificarServiceImp implements ReciboSinIdentificarServi
 		recibosSinIdentificarRepository.deleteAll();
 		for (int i=0; i< listado.length; i++) {
 				ReciboSinIdentificar r = new  ReciboSinIdentificar();
-				r.setFileName(listado[i]);
+				r.setNombre(listado[i]);
 				recibosSinIdentificarRepository.save(r);
 
 		}
@@ -136,11 +136,11 @@ public class ReciboSinIdentificarServiceImp implements ReciboSinIdentificarServi
 
 			for (ReciboSinIdentificar reciboSinIdentificar : recibosSinIdenticar) {
 				this.pattern = Pattern.compile(personal.getPatron());
-				this.matcher = pattern.matcher(reciboSinIdentificar.getFileName().replaceAll(" ", ""));
+				this.matcher = pattern.matcher(reciboSinIdentificar.getNombre().replaceAll(" ", ""));
 				while (matcher.find()) {
 					boolean enviado =false;
 					for (ReciboEnviado reciboEnviados:reciboEnviadoRepository.findAll()) {
-						if(reciboEnviados.getNombre().equals(reciboSinIdentificar.getFileName())){
+						if(reciboEnviados.getNombre().equals(reciboSinIdentificar.getNombre())){
 							enviado = true;
 							break;
 						}
@@ -150,10 +150,10 @@ public class ReciboSinIdentificarServiceImp implements ReciboSinIdentificarServi
 						logger.info(path.concat(matcher.group()));
 						
 						ReciboIdentificado reciboIdentificado = new ReciboIdentificado();
-						reciboIdentificado.setNombre(reciboSinIdentificar.getFileName());
+						reciboIdentificado.setNombre(reciboSinIdentificar.getNombre());
 						reciboIdentificado.setPersonal(personal);
 
-						item.setArchivo(reciboSinIdentificar.getFileName());
+						item.setArchivo(reciboSinIdentificar.getNombre());
 						item.setEnviado(Boolean.FALSE);
 						items.add(item);
 						reciboIdentificadoRepository.save(reciboIdentificado);

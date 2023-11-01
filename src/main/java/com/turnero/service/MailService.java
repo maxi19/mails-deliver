@@ -1,13 +1,12 @@
 package com.turnero.service;
 
 import com.turnero.dto.DocenteDto;
-import com.turnero.entity.Personal;
-import com.turnero.entity.ReciboSinIdentificar;
+import com.turnero.dto.EnvioSinMatchDto;
 
 public interface MailService {
-    public void enviarSinMatch(Personal personal, ReciboSinIdentificar recibo);
+    public void enviarSinMatch(EnvioSinMatchDto envioSinMatchDto);
 
-    /*public void enviarRecibos(DocenteDto docenteDto);
+    public void enviarRecibos(DocenteDto docenteDto);
 
-    public void enviarRecibo(DocenteDto docenteDto, int idItem);*/
+    public void enviarRecibo(DocenteDto docenteDto, int idItem);
 }

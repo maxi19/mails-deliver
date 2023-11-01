@@ -16,9 +16,12 @@ import javax.mail.internet.MimeBodyPart;
 import javax.mail.internet.MimeMessage;
 import javax.mail.internet.MimeMultipart;
 
+import com.turnero.dto.DocenteDto;
+import com.turnero.dto.EnvioSinMatchDto;
+import com.turnero.dto.ItemDto;
 import com.turnero.entity.ReciboEnviado;
 import com.turnero.entity.Personal;
-import com.turnero.entity.ReciboSinIdentificar;
+import com.turnero.entity.ReciboIdentificado;
 import com.turnero.repository.PersonalRepository;
 import com.turnero.repository.ReciboEnviadoRepository;
 import com.turnero.repository.ReciboIdentificadoRepository;
@@ -67,17 +70,17 @@ public class MailServiceImp implements MailService{
 	@Autowired
 	private ReciboIdentificadoRepository reciboIdentificadoRepository;
 
-	  public void enviarSinMatch(Personal personal, ReciboSinIdentificar recibo) {
+	  public void enviarSinMatch(EnvioSinMatchDto envioSinMatchDto) {
 		    Session session = Session.getDefaultInstance(getProperties(), config);
 		    try {
 		      Message msg = new MimeMessage(session);
 		      msg.setFrom(new InternetAddress(emailUser));
-		      msg.addRecipient(Message.RecipientType.TO, new InternetAddress(personal.getEmail()));
+		      msg.addRecipient(Message.RecipientType.TO, new InternetAddress(envioSinMatchDto.getPersonal().getEmail()));
 		      msg.setSubject("Recibo De Sueldo");
 		      MimeBodyPart textPart = new MimeBodyPart();
 			  textPart.setText("");
 
-			  String UrlRecibo = path.concat("/").concat(recibo.getFileName());
+			  String UrlRecibo = path.concat("/").concat(envioSinMatchDto.getReciboSinIdentificar().getNombre());
 			  String htmlBody = "";
 			  Multipart mp = new MimeMultipart();
 			  mp.addBodyPart(textPart);
@@ -88,15 +91,15 @@ public class MailServiceImp implements MailService{
 
 			  MimeBodyPart attachment = new MimeBodyPart();
 			  attachment.attachFile(new File(UrlRecibo), "application/pdf", null);
-			  attachment.setFileName(recibo.getFileName());
+			  attachment.setFileName(envioSinMatchDto.getReciboSinIdentificar().getNombre());
 
 			  mp.addBodyPart(attachment);
 			  msg.setContent(mp);
 			  Transport.send(msg);
 
 			  ReciboEnviado reciboEnviado = new ReciboEnviado();
-			  reciboEnviado.setPersonal(personal);
-			  reciboEnviado.setNombre(recibo.getFileName());
+			  reciboEnviado.setPersonal(envioSinMatchDto.getPersonal());
+			  reciboEnviado.setNombre(envioSinMatchDto.getReciboSinIdentificar().getNombre());
 			  LocalDateTime fecha = LocalDateTime.now();
 			  reciboEnviado.setFecha(fecha);
 			  reciboEnviadoRepository.save(reciboEnviado);
@@ -114,7 +117,7 @@ public class MailServiceImp implements MailService{
           // [END simple_example]
 		  }
 
-		/*  public void enviarRecibos(DocenteDto docenteDto) {
+		  public void enviarRecibos(DocenteDto docenteDto) {
 			Session session = Session.getDefaultInstance(getProperties(), config);
 		    try {
 		      Message msg = new MimeMessage(session);
@@ -199,7 +202,6 @@ public class MailServiceImp implements MailService{
 			reciboEnviado.setFecha(fecha);
 			reciboEnviadoRepository.save(reciboEnviado);
 
-
 		} catch (AddressException e) {
 			// ...
 		} catch (MessagingException e) {
@@ -209,7 +211,7 @@ public class MailServiceImp implements MailService{
 		} catch (IOException e) {
 			throw new RuntimeException(e);
 		}
-	}*/
+	}
 
 
 

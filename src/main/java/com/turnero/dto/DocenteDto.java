@@ -15,5 +15,4 @@ public class DocenteDto {
     private String apellidos;
     private String email;
     private List<ItemDto> ItemDto;
-
 }

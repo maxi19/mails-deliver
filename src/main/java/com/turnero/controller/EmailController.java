@@ -1,8 +1,7 @@
 package com.turnero.controller;
 
 import com.turnero.dto.DocenteDto;
-import com.turnero.entity.Personal;
-import com.turnero.entity.ReciboSinIdentificar;
+import com.turnero.dto.EnvioSinMatchDto;
 import com.turnero.service.MailService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -21,12 +20,12 @@ public class EmailController {
     MailService mailService;
 
     @PostMapping(value = "/envio/sinMatch", produces = { MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_PROBLEM_JSON_VALUE })
-    public ResponseEntity<Void> enviarSinMatch(@Valid @RequestBody Personal personal,@Valid @RequestBody ReciboSinIdentificar recibo) throws Exception{
-        mailService.enviarSinMatch(personal,recibo);
+    public ResponseEntity<Void> enviarSinMatch(@Valid @RequestBody EnvioSinMatchDto envioSinMatchDto) throws Exception{
+        mailService.enviarSinMatch(envioSinMatchDto);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
-   /* @PostMapping(value = "/envio/varios", produces = { MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_PROBLEM_JSON_VALUE })
+    @PostMapping(value = "/envio/varios", produces = { MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_PROBLEM_JSON_VALUE })
     public ResponseEntity<Void> enviarArchivos(@Valid @RequestBody DocenteDto docenteDto) throws Exception{
         mailService.enviarRecibos(docenteDto);
         return new ResponseEntity<>(HttpStatus.OK);
@@ -36,5 +35,5 @@ public class EmailController {
     public ResponseEntity<Void> enviarIndividual(@Valid @RequestBody DocenteDto docenteDto, @PathVariable int numRecibo){
         mailService.enviarRecibo(docenteDto, numRecibo);
         return  new ResponseEntity<>(HttpStatus.OK);
-    }*/
+    }
 }
