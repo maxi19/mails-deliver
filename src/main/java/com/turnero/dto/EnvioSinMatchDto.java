@@ -6,11 +6,10 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-@Data
 @AllArgsConstructor
 @NoArgsConstructor
+@Data
 public class EnvioSinMatchDto {
-
     private Personal personal;
 
     private ReciboSinIdentificar reciboSinIdentificar;

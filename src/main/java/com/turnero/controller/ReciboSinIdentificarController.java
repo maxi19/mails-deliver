@@ -35,7 +35,7 @@ public class ReciboSinIdentificarController {
 		return new ResponseEntity<>(ReciboSinIdentificarService.machear(recibosSinIdentificar),HttpStatus.OK);
 	}
 
-	@PostMapping(value =  "/archivos/patron")
+	@PutMapping(value =  "/archivos/patron")
 	public ResponseEntity<Void>  asdas(){
 		ReciboSinIdentificarService.patron();
 		return new ResponseEntity<>(HttpStatus.OK);

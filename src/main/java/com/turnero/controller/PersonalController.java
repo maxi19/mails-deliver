@@ -36,17 +36,19 @@ public class PersonalController {
     	this.personalService.Add(personal);
     	return new ResponseEntity<>(HttpStatus.CREATED);
     }
-	@PostMapping(value =  "/editarPersonal" , produces = { MediaType.APPLICATION_JSON_VALUE,
+	@PutMapping(value =  "/editarPersonal/{id}" , produces = { MediaType.APPLICATION_JSON_VALUE,
 			MediaType.APPLICATION_PROBLEM_JSON_VALUE })
-	public ResponseEntity<Personal>  editarPersonal(@RequestBody Personal personal) throws Exception {
-		personalService.Add(personal);
-		return new ResponseEntity<Personal>(personal, HttpStatus.OK);
+	public ResponseEntity<Void>  editarPersonal(@PathVariable Integer  id, @RequestBody Personal personal) throws Exception {
+		String nombres = personal.getNombres();
+		String apellidos = personal.getApellidos();
+		String patron = apellidos.concat(",").concat(nombres).concat("_").concat(".+").concat(".pdf").replaceAll(" ", "").toUpperCase();
+		personal.setPatron(patron);
+		personalService.editar(personal, id);
+		return new ResponseEntity<>(HttpStatus.OK);
 	}
 
 
-	@GetMapping(value =  "/eliminarPersonal/{id}" , produces = { MediaType.APPLICATION_JSON_VALUE,
-
-			MediaType.APPLICATION_PROBLEM_JSON_VALUE })
+	@GetMapping(value =  "/eliminarPersonal/{id}" , produces = { MediaType.APPLICATION_JSON_VALUE,MediaType.APPLICATION_PROBLEM_JSON_VALUE })
 	public ResponseEntity<Void>  eliminar(@PathVariable Integer id  ) throws Exception {
 		personalService.eliminarPersonal(id);
 		return new ResponseEntity<>(HttpStatus.OK);

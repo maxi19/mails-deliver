@@ -15,6 +15,6 @@ public interface PersonalService {
 
 	public List<Personal> listar();
 
-	public void editar(Personal personal) throws Exception;
+	public void editar(Personal personal, Integer id) throws Exception;
 	
 }

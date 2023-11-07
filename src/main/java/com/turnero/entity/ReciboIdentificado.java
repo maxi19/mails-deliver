@@ -12,9 +12,9 @@ public class ReciboIdentificado {
     private Integer id;
 
 
-    private String nombre; 
+    private String nombre;
 
-   @ManyToOne(optional = false, fetch = FetchType.LAZY)
-   @JoinColumn(name = "personal", referencedColumnName = "id")
+    @ManyToOne(optional = false, fetch = FetchType.LAZY)
+    @JoinColumn(name = "personal_id", referencedColumnName = "id")
     private Personal personal;
 }

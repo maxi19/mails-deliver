@@ -148,7 +148,6 @@ public class ReciboSinIdentificarServiceImp implements ReciboSinIdentificarServi
 					if(!enviado){
 						item = new ItemDto();
 						logger.info(path.concat(matcher.group()));
-						
 						ReciboIdentificado reciboIdentificado = new ReciboIdentificado();
 						reciboIdentificado.setNombre(reciboSinIdentificar.getNombre());
 						reciboIdentificado.setPersonal(personal);

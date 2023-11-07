@@ -24,17 +24,18 @@ public class PersonalServiceImp implements PersonalService {
 	}
 
 	@Override
-	public void editar(Personal personal) throws Exception {
+	public void editar(Personal personal, Integer id) throws Exception {
 
 		try {
-			Personal personaBuscada  = this.buscarPersonal(personal.getId());
-			personaBuscada.setApellidos(personal.getApellidos());
-			personaBuscada.setNombres(personal.getNombres());
-			personaBuscada.setNombres(personal.getEmail());
-			personaBuscada.setNombres(personal.getPatron());
-			personalRepository.save(personaBuscada);
+			Personal personalEncontrada  = this.buscarPersonal(id);
+
+			personalEncontrada.setApellidos(personal.getApellidos().toUpperCase());
+			personalEncontrada.setNombres(personal.getNombres().toUpperCase());
+			personalEncontrada.setEmail(personal.getEmail());
+			personalEncontrada.setPatron(personal.getPatron());
+			personalRepository.save(personalEncontrada);
 		} catch (Exception e) {
-			throw new Exception("la persona que quiere editar no existe");
+			throw new Exception("la persona que quiere editar no existe o no fue encontrada");
 		}
 
 	}
