@@ -133,7 +133,7 @@ public class MailServiceImp implements MailService{
 			  for (ItemDto items: docenteDto.getItemDto()) {
 				boolean identificado = false;
 				for (ReciboIdentificado reciboIdentificado : reciboIdentificadoRepository.findAll()){
-					if(reciboIdentificado.getPersonal().getId().equals(docenteDto.getId()) && reciboIdentificado.getNombre().equals(items.getArchivo())){
+					if(reciboIdentificado.getPersonal().getPersonal_id().equals(docenteDto.getId()) && reciboIdentificado.getNombre().equals(items.getArchivo())){
 						  identificado = true;
 						  break;
 				    }

@@ -1,22 +1,26 @@
 package com.turnero.entity;
 
-import java.util.List;
-import java.util.UUID;
+import java.io.Serializable;
 
 import javax.persistence.*;
 
-import org.hibernate.annotations.GenericGenerator;
-
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
 
 @Entity
 @Data
+@NoArgsConstructor
+@AllArgsConstructor
+@EqualsAndHashCode
+@Table(name="personal")
 public class Personal {
 
 	@Id
-	@GeneratedValue(strategy= GenerationType.IDENTITY)
-	private Integer id;
-
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+	private Integer personal_id;
+	
 	private String nombres;
 
 	private String apellidos;
@@ -25,11 +29,5 @@ public class Personal {
 	
 	private String patron;
 
-	/*@OneToMany(cascade = CascadeType.REMOVE)
-	private List<ReciboEnviado> reciboEnviado;
-
-	 */
-
-	
 	
 }

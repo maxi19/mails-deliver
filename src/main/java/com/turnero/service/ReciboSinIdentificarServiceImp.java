@@ -126,7 +126,7 @@ public class ReciboSinIdentificarServiceImp implements ReciboSinIdentificarServi
 		for (Personal personal : personalRepository.findAll()) {
 			logger.info("el usuario {} , tiene los siguientes archivos ", personal.getNombres().concat(",").concat(personal.getApellidos()));
 			DocenteDto docente = new DocenteDto();
-			docente.setId(personal.getId().intValue());
+			docente.setId(personal.getPersonal_id().intValue());
 			docente.setNombres(personal.getNombres());
 			docente.setApellidos(personal.getApellidos());
 			docente.setEmail(personal.getEmail());

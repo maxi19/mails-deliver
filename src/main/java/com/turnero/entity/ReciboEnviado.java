@@ -1,7 +1,5 @@
 package com.turnero.entity;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.turnero.entity.Personal;
 import lombok.Data;
 
 import javax.persistence.*;
@@ -17,15 +15,11 @@ public class ReciboEnviado {
 
 
     @ManyToOne(optional = false, fetch = FetchType.LAZY)
-    @JoinColumn(name = "personal_id", referencedColumnName = "id")
-    @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
+    @JoinColumn(name = "personal_id", referencedColumnName = "personal_id")
     private Personal personal;
 
     private String nombre;
 
     private LocalDateTime fecha;
-
-
-
 
 }
