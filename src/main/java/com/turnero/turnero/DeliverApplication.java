@@ -1,5 +1,9 @@
 package com.turnero.turnero;
 
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.HashSet;
+
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -23,12 +27,16 @@ public class DeliverApplication {
 		SpringApplication.run(DeliverApplication.class, args);
 	}
 
-	//habilitar la carga de este usuario en el archivo properties (mock.usuarios)
 	@ConditionalOnProperty(name="mock.usuarios")
 	@Bean
 	public CommandLineRunner commandLineRunner(UserService userService) {
-		return args -> {
-			userService.registrarUsuario(new User("maxi@gmail.com", "123456", "mrunix",  Role.DOCENTE) );
+				return args -> {
+					userService.registrarUsuario(new User("maximilianoguzman@fatimarem.edu.ar", "123456", "admin", Arrays.asList(Role.ADMIN)));
+					userService.registrarUsuario(new User("secretario@gmail.com", "123456", "secretario", Arrays.asList(Role.SECRETARIO)));
+					userService.registrarUsuario(new User("usuario@gmail.com", "123456", "usuario", Arrays.asList(Role.USER)));
+
 		};
 	}
+	
+
 }

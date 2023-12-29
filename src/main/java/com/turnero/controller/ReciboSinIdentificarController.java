@@ -21,7 +21,7 @@ import javax.validation.Valid;
 
 @RestController
 @RequestMapping(value = "/msdeliver")
-@CrossOrigin(origins = "http://localhost:4200")
+@CrossOrigin(origins = "${cross.origin}", allowCredentials = "true")
 public class ReciboSinIdentificarController {
 
 	@Autowired
@@ -29,11 +29,19 @@ public class ReciboSinIdentificarController {
 
 	private static final Logger log =  LoggerFactory.getLogger(ReciboSinIdentificarController.class);
 
+	@GetMapping(value =  "/archivos/listar" , produces = { MediaType.APPLICATION_JSON_VALUE,
+			MediaType.APPLICATION_PROBLEM_JSON_VALUE })
+	public ResponseEntity<Set<ReciboSinIdentificar>>  listar() throws Exception {
+		return new ResponseEntity<>(ReciboSinIdentificarService.leerArchivos(),HttpStatus.OK);
+	}
+	
+	
 	@GetMapping(value =  "/archivos/nombres" , produces = { MediaType.APPLICATION_JSON_VALUE,
 			MediaType.APPLICATION_PROBLEM_JSON_VALUE })
 	public ResponseEntity<Set<ReciboSinIdentificar>>  listarArchivos() throws Exception {
 		return new ResponseEntity<>(ReciboSinIdentificarService.leerArchivos(),HttpStatus.OK);
 	}
+
 
 	@PostMapping(value =  "/archivos/machear" , produces = { MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_PROBLEM_JSON_VALUE })
 	public ResponseEntity<List<DocenteDto>>  machearArchivos(@Valid @RequestBody List<ReciboSinIdentificar> recibosSinIdentificar) throws Exception {

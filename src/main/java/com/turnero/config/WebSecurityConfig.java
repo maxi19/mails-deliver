@@ -63,7 +63,9 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 				.antMatchers("/usuarios/roles").permitAll()
 				.antMatchers("/personal/**").permitAll()
 				.antMatchers("/recibo/enviado/**").permitAll()
-				.antMatchers("/msdeliver/**").permitAll().
+				.antMatchers("/email/**").permitAll()
+				.antMatchers("/msdeliver/**").permitAll()
+				.antMatchers("/recibo/enviado/**").permitAll().
 				
 				
 				// all other requests need to be authenticated

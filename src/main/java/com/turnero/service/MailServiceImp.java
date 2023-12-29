@@ -16,6 +16,7 @@ import javax.mail.internet.MimeBodyPart;
 import javax.mail.internet.MimeMessage;
 import javax.mail.internet.MimeMultipart;
 
+import com.turnero.controller.PersonalController;
 import com.turnero.dto.DocenteDto;
 import com.turnero.dto.EnvioSinMatchDto;
 import com.turnero.dto.ItemDto;
@@ -25,6 +26,9 @@ import com.turnero.entity.ReciboIdentificado;
 import com.turnero.repository.PersonalRepository;
 import com.turnero.repository.ReciboEnviadoRepository;
 import com.turnero.repository.ReciboIdentificadoRepository;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -51,6 +55,9 @@ public class MailServiceImp implements MailService{
 	private String smtpAuth;
 	@Value("${config.mail.destinatario}")
 	private String emailUser;
+	
+	private static final Logger log =  LoggerFactory.getLogger(MailServiceImp.class);
+
 	
 	@Bean
 	public Properties getProperties() {
@@ -95,6 +102,7 @@ public class MailServiceImp implements MailService{
 
 			  mp.addBodyPart(attachment);
 			  msg.setContent(mp);
+			  
 			  Transport.send(msg);
 
 			  ReciboEnviado reciboEnviado = new ReciboEnviado();
@@ -102,6 +110,7 @@ public class MailServiceImp implements MailService{
 			  reciboEnviado.setNombre(envioSinMatchDto.getReciboSinIdentificar().getNombre());
 			  LocalDateTime fecha = LocalDateTime.now();
 			  reciboEnviado.setFecha(fecha);
+			  log.info("Se proceso y envio el documento {} ", reciboEnviado);
 			  reciboEnviadoRepository.save(reciboEnviado);
 
 

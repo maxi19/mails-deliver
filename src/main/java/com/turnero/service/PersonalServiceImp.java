@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.turnero.entity.Personal;
+import com.turnero.exceptions.DeliverException;
 import com.turnero.repository.PersonalRepository;
 
 import java.util.ArrayList;
@@ -20,6 +21,9 @@ public class PersonalServiceImp implements PersonalService {
 	
 	@Override
 	public void Add(Personal personal) throws Exception {
+		if (!personalRepository.findByEmail(personal.getEmail()).isEmpty()) {
+			throw new DeliverException("Ya existe un usuario con este email");
+		}
 		personalRepository.save(personal);
 	}
 

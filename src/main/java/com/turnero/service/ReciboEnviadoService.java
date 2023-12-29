@@ -15,4 +15,7 @@ public interface ReciboEnviadoService {
     public void eliminarTodos()throws Exception;
 
     public ReciboEnviado buscarRecibo(Integer id)throws Exception;
+    
+    
+    
 }

@@ -18,13 +18,9 @@ public class ReciboEnviadoServiceImp implements ReciboEnviadoService{
     ReciboEnviadoRepository reciboEnviadoRepository;
     @Override
     public List<ReciboEnviado> listarRecibos(){
-            List<ReciboEnviado> recibos = new ArrayList< >();
-            for (ReciboEnviado reciboEnviado : reciboEnviadoRepository.findAll()) {
-                recibos.add(reciboEnviado);
-            }
-
+            List<ReciboEnviado> recibos = new ArrayList<>();
+            reciboEnviadoRepository.findAll().forEach(recibos::add);
             return recibos;
-
     }
 
     @Override
@@ -62,4 +58,7 @@ public class ReciboEnviadoServiceImp implements ReciboEnviadoService{
         }
         return optRecibo.get();
     }
+    
+    
+    
 }

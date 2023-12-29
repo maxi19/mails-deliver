@@ -1,5 +1,7 @@
 package com.turnero.controller;
 
+import java.security.Principal;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Objects;
@@ -10,16 +12,19 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.DisabledException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.util.CollectionUtils;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -30,12 +35,12 @@ import com.turnero.config.JwtTokenUtil;
 import com.turnero.dto.JwtRequest;
 import com.turnero.dto.JwtResponse;
 import com.turnero.dto.UserDto;
+import com.turnero.entity.Personal;
 
-import antlr.collections.List;
 
 @RestController
 @RequestMapping(value = "/usuarios")
-@CrossOrigin(origins = "http://localhost:4200")
+@CrossOrigin(origins = "${cross.origin}", allowCredentials = "true")
 public class JwtController {
 
 	@Autowired
@@ -44,10 +49,11 @@ public class JwtController {
 	@Autowired
 	private JwtTokenUtil jwtTokenUtil;
 	
+	private static final Logger log =  LoggerFactory.getLogger(JwtController.class);
+
+	
 	@Autowired
 	private UserDetailsService jwtInMemoryUserDetailsService;
-
-	private static final Logger log =  LoggerFactory.getLogger(JwtController.class);
 
 	
 	@RequestMapping(value = "/authenticate", method = RequestMethod.POST)
@@ -74,6 +80,7 @@ public class JwtController {
 
 		try {
 			authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(username, password));
+			log.info("Se autentico usuario {} ", username);
 		} catch (DisabledException e) {
 			throw new Exception("USER_DISABLED", e);
 		} catch (BadCredentialsException e) {
@@ -90,6 +97,15 @@ public class JwtController {
 		return new ResponseEntity<UserDto>(new UserDto(null,auth.getName(), null, null, null, credentials), HttpStatus.OK );
 	}
 	
+	@RequestMapping(value = "/user", method = RequestMethod.POST)
+	public ResponseEntity<Object> createUser(UserDto userDto)
+			throws Exception {
+		
+		//log.info("El usuario tiene los roles {} ", auth.getCredentials());
+		
+		return new ResponseEntity<> (null, HttpStatus.OK );
+	}
+	
 	@RequestMapping(value = "/roles", method = RequestMethod.POST)
 	public ResponseEntity<Object> getCredentials(Authentication auth)
 			throws Exception {
@@ -98,4 +114,12 @@ public class JwtController {
 		
 		return new ResponseEntity<> (auth.getCredentials(), HttpStatus.OK );
 	}
+	
+	@GetMapping(value =  "/roles-test" , produces = { MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_PROBLEM_JSON_VALUE })
+	public ResponseEntity<?>  getRoles(Authentication authentication) throws Exception {
+		UserDetails userDetails = (UserDetails)authentication.getPrincipal();
+		return new ResponseEntity<>(userDetails.getAuthorities(), HttpStatus.OK);
+	}
+	
+	
 }

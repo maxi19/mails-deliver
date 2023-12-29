@@ -17,4 +17,7 @@ public interface ReciboSinIdentificarService {
 
 	public void crearPDF() ;
 
+	//public void moverRecibo(  ) throws Exception;
+
+
 }

@@ -127,9 +127,6 @@ public class User  implements UserDetails{
 		return enabled;
 	}
 
-
-
-
 	public User(String email, String password, String username, Role role ) {
 		super();
 		this.email = email;
@@ -139,6 +136,19 @@ public class User  implements UserDetails{
 		this.enabled = true;
 		this.expired = true;
 		this.roles = Arrays.asList(role);
+		this.firstName = "No declarado";
+		this.lastName = "No declarado";
+
+	}
+	public User(String email, String password, String username, Collection<Role> roles ) {
+		super();
+		this.email = email;
+		this.password = password;
+		this.username = username;
+		this.blocked = true;
+		this.enabled = true;
+		this.expired = true;
+		this.roles = roles;
 		this.firstName = "No declarado";
 		this.lastName = "No declarado";
 

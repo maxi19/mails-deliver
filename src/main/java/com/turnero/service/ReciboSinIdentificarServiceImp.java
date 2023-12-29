@@ -28,6 +28,12 @@ public class ReciboSinIdentificarServiceImp implements ReciboSinIdentificarServi
 	@Value("${config.path.recibos}")
 	private String path;
 	
+	@Value("${config.path.recibos.procesados}")
+	private String pathProcesados;
+	
+	@Value("${config.path.recibos.enviados}")
+	private String pathEnviados;
+	
     private static final Logger logger = LoggerFactory.getLogger(ReciboSinIdentificarServiceImp.class);
 
 

@@ -14,7 +14,7 @@ public class ReciboEnviado {
     private Integer id;
 
 
-    @ManyToOne(optional = false, fetch = FetchType.LAZY)
+    @ManyToOne(optional = false, fetch = FetchType.EAGER)
     @JoinColumn(name = "personal_id", referencedColumnName = "personal_id")
     private Personal personal;
 
