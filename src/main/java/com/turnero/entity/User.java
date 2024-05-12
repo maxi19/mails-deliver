@@ -1,93 +1,108 @@
 package com.turnero.entity;
 
+import com.turnero.enums.Role;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
-
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import com.turnero.dto.UserDto;
-import com.turnero.enums.Role;
-
 import java.io.Serializable;
 import java.util.*;
 import javax.persistence.*;
 
 @Data
-@Entity
 @NoArgsConstructor
 @AllArgsConstructor
 @EqualsAndHashCode
 @Table(name="users")
-public class User  implements UserDetails{
+@Entity
+@Inheritance(strategy=InheritanceType.SINGLE_TABLE)
+public class User  implements UserDetails , Serializable{
 
-    /**
-	 * 
+	/**
+	 *
 	 */
 	private static final long serialVersionUID = 1L;
 
 	@Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	private Long id;
 
-    @Column(nullable = false, unique = true, length = 45)
-    private String email;
+	@Column(nullable = false, unique = true, length = 45)
+	private String email;
 
-    @Column(nullable = false, unique = true, length = 45)
-    private String username;
-    
-    @Column(nullable = false, length = 64)
-    private String password;
+	@Column(nullable = false, unique = true, length = 45)
+	private String username;
 
-    @Column(name = "first_name", nullable = false, length = 20)
-    private String firstName;
+	@Column(nullable = false, length = 64)
+	private String password;
 
-    @Column(name = "last_name", nullable = false, length = 20)
-    private String lastName;
+	@Column(name = "first_name", nullable = false, length = 20)
+	private String firstName;
 
-    @Column(name = "habilitado", nullable = false, length = 20)
-    private boolean enabled;
-    
-    @Column(name = "credential_expired", nullable = false, length = 20)
-    private boolean expired;
-    
-    @Column(name = "bloqueado", nullable = false, length = 20)
-    private boolean blocked;
-    
-    @JoinTable(name = "role", joinColumns = @JoinColumn(name = "user_id"))
-    @Column(name = "role", nullable = false)
-    @Enumerated(EnumType.STRING)
-    @ElementCollection(fetch = FetchType.EAGER)
-    private Collection<Role> roles = new HashSet<Role>();
-    
-    
-    public static User getUser(UserDto userDto){
-        User user = new User();
-        user.setEmail(userDto.getEmail());
-        user.setFirstName(userDto.getFirstName());
-        user.setLastName(userDto.getLastName());
-        BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
-        user.setPassword( passwordEncoder.encode(userDto.getPassword()));
-        return user;
-    }
+	@Column(name = "last_name", nullable = false, length = 20)
+	private String lastName;
+
+	@Column(name = "habilitado", nullable = false, length = 20)
+	private boolean enabled;
+
+	@Column(name = "credential_expired", nullable = false, length = 20)
+	private boolean expired = false;
+
+	@Column(name = "bloqueado", nullable = false, length = 20)
+	private boolean blocked;
+
+	@Column(name = "rol")
+	@Enumerated(EnumType.STRING)
+	private Role rol;
+
+	//email
+	@Column(name = "emaildestinatario", nullable = true, length = 20)
+	private String emailDestinatario;
+
+	@Column(name = "emailpassword", nullable = true, length = 20)
+	private String emailPassword;
 
 
+	//smtp config
+	@Column(name = "smtp", nullable = true, length = 20)
+	private String smtp;
+
+	@Column(name = "smtpPort", nullable = true, length = 20)
+	private String smtpPort;
+
+	@Column(name = "smtphost", nullable = true, length = 20)
+	private String smtphost;
+
+	@Column(name = "enabledSmtp", nullable = true)
+	private boolean enbableSmtp;
+
+
+
+	public static User getUser(UserDto userDto){
+		User user = new User();
+		user.setEmail(userDto.getEmail());
+		user.setFirstName(userDto.getFirstName());
+		user.setLastName(userDto.getLastName());
+		BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+		user.setPassword( passwordEncoder.encode(userDto.getPassword()));
+		return user;
+	}
 
 
 	@Override
 	public Collection<? extends GrantedAuthority> getAuthorities() {
-		    List<GrantedAuthority> authorities = new ArrayList<>();
-		    for (Role role: getRoles()) {
-		    	authorities.addAll(role.getAuthorities());
-		    }
-		    return authorities;
+		return Arrays.asList(new GrantedAuthority() {
+			@Override
+			public String getAuthority() {
+				return rol.getRol();
+			}
+		});
 	}
-
-
-
 
 	@Override
 	public String getUsername() {
@@ -100,7 +115,7 @@ public class User  implements UserDetails{
 	@Override
 	public boolean isAccountNonExpired() {
 		// TODO Auto-generated method stub
-		return true;
+		return expired;
 	}
 
 
@@ -116,7 +131,7 @@ public class User  implements UserDetails{
 
 	@Override
 	public boolean isCredentialsNonExpired() {
-		return this.expired;
+		return true;
 	}
 
 
@@ -127,30 +142,19 @@ public class User  implements UserDetails{
 		return enabled;
 	}
 
-	public User(String email, String password, String username, Role role ) {
-		super();
+
+	public User(String email, String username, String password, String firstName, String lastName, Role rol) {
 		this.email = email;
-		this.password = password;
 		this.username = username;
-		this.blocked = true;
-		this.enabled = true;
-		this.expired = true;
-		this.roles = Arrays.asList(role);
-		this.firstName = "No declarado";
-		this.lastName = "No declarado";
+		this.password = password;
+		this.firstName = firstName;
+		this.lastName = lastName;
+		this.rol = rol;
+		this.blocked= false;
+		this.enabled= false;
+		this.expired = false;
 
 	}
-	public User(String email, String password, String username, Collection<Role> roles ) {
-		super();
-		this.email = email;
-		this.password = password;
-		this.username = username;
-		this.blocked = true;
-		this.enabled = true;
-		this.expired = true;
-		this.roles = roles;
-		this.firstName = "No declarado";
-		this.lastName = "No declarado";
 
-	}
+
 }

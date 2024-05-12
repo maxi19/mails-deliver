@@ -1,7 +1,6 @@
 package com.turnero.controller;
 
 import com.turnero.dto.DocenteDto;
-import com.turnero.dto.EnvioSinMatchDto;
 import com.turnero.service.MailService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -16,7 +15,7 @@ import javax.validation.Valid;
 @CrossOrigin(origins = "${cross.origin}", allowCredentials = "true")
 public class EmailController {
 
-
+/*
     @Autowired
     MailService mailService;
 
@@ -37,4 +36,6 @@ public class EmailController {
         mailService.enviarRecibo(docenteDto, numRecibo);
         return  new ResponseEntity<>(HttpStatus.OK);
     }
+    */
+
 }

@@ -1,31 +1,12 @@
 package com.turnero.service;
 
-import java.io.*;
-import java.time.LocalDateTime;
 import java.util.*;
 
 import javax.mail.Authenticator;
-import javax.mail.Message;
-import javax.mail.MessagingException;
-import javax.mail.Multipart;
-import javax.mail.Session;
-import javax.mail.Transport;
-import javax.mail.internet.AddressException;
-import javax.mail.internet.InternetAddress;
-import javax.mail.internet.MimeBodyPart;
-import javax.mail.internet.MimeMessage;
-import javax.mail.internet.MimeMultipart;
 
-import com.turnero.controller.PersonalController;
+
 import com.turnero.dto.DocenteDto;
-import com.turnero.dto.EnvioSinMatchDto;
-import com.turnero.dto.ItemDto;
-import com.turnero.entity.ReciboEnviado;
-import com.turnero.entity.Personal;
-import com.turnero.entity.ReciboIdentificado;
 import com.turnero.repository.PersonalRepository;
-import com.turnero.repository.ReciboEnviadoRepository;
-import com.turnero.repository.ReciboIdentificadoRepository;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -68,12 +49,24 @@ public class MailServiceImp implements MailService{
 		props.put("mail.smtp.auth", smtpAuth);
 		return props;
 	}
-	@Autowired
-	private ReciboEnviadoRepository reciboEnviadoRepository;
+
 
 	@Autowired
 	private PersonalRepository personalRepository;
 
+
+	@Override
+	public void enviarRecibos(DocenteDto docenteDto) {
+
+	}
+
+	@Override
+	public void enviarRecibo(DocenteDto docenteDto, int idItem) {
+
+	}
+
+
+	/*
 	@Autowired
 	private ReciboIdentificadoRepository reciboIdentificadoRepository;
 
@@ -221,6 +214,9 @@ public class MailServiceImp implements MailService{
 			throw new RuntimeException(e);
 		}
 	}
+
+	*/
+
 
 
 

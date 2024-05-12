@@ -27,16 +27,19 @@ public class DeliverApplication {
 		SpringApplication.run(DeliverApplication.class, args);
 	}
 
+	/*
 	@ConditionalOnProperty(name="mock.usuarios")
 	@Bean
 	public CommandLineRunner commandLineRunner(UserService userService) {
 				return args -> {
-					userService.registrarUsuario(new User("maximilianoguzman@fatimarem.edu.ar", "123456", "admin", Arrays.asList(Role.ADMIN)));
-					userService.registrarUsuario(new User("secretario@gmail.com", "123456", "secretario", Arrays.asList(Role.SECRETARIO)));
-					userService.registrarUsuario(new User("usuario@gmail.com", "123456", "usuario", Arrays.asList(Role.USER)));
+					userService.registrarUsuario(new User("maximilianoguzman@fatimarem.edu.ar", "123456", "admin", Role.ADMIN));
+					userService.registrarUsuario(new User("secretario@gmail.com", "123456", "secretario", Role.SECRETARIA));
+					userService.registrarUsuario(new User("usuario@gmail.com", "123456", "usuario", Role.DOCENTE));
 
 		};
 	}
-	
+	*/
+
+
 
 }
