@@ -1,5 +1,6 @@
 package com.turnero.config;
 
+import com.turnero.dto.FileMessage;
 import org.springframework.beans.TypeMismatchException;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -7,6 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.context.request.WebRequest;
+import org.springframework.web.multipart.MaxUploadSizeExceededException;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
 import com.turnero.dto.ErrorDto;
@@ -30,6 +32,12 @@ public class ConfigCustom extends ResponseEntityExceptionHandler {
 		e.setHttpStatus(HttpStatus.BAD_REQUEST);
 		e.setMensaje(ex.getMessage());
 		return new ResponseEntity<>(e ,HttpStatus.BAD_REQUEST);
+	}
+
+	@ExceptionHandler(MaxUploadSizeExceededException.class)
+	public  ResponseEntity<FileMessage> maxSizeException(MaxUploadSizeExceededException ex){
+		return ResponseEntity.status(HttpStatus.EXPECTATION_FAILED)
+				.body(new FileMessage("uno de sus archivos excede el tamaño maximo"));
 	}
 
 

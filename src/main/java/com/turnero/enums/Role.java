@@ -3,9 +3,10 @@ package com.turnero.enums;
 
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.GrantedAuthority;
 
 @RequiredArgsConstructor
-public enum Role {
+public enum Role implements GrantedAuthority {
 
 	SECRETARIA("SECRETARIA"),
 	ADMIN("ADMIN"),
@@ -22,5 +23,9 @@ public enum Role {
 		return rol;
 	}
 
+	@Override
+	public String getAuthority() {
+		return this.rol;
+	}
 }
 

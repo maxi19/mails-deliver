@@ -60,6 +60,7 @@ public class UserManagerImp implements UserManager {
 
         Authentication autenteication = authenticate(authenticationRequest.getUsername(), authenticationRequest.getPassword());
 
+
         final UserDetails userDetails = jwtInMemoryUserDetailsService
                 .loadUserByUsername(authenticationRequest.getUsername());
 
@@ -74,8 +75,10 @@ public class UserManagerImp implements UserManager {
 
 
         SecurityContext context = SecurityContextHolder.createEmptyContext();
+
         context.setAuthentication(autenteication);
         SecurityContextHolder.setContext(context);
+
 
         return token;
 

@@ -71,6 +71,9 @@ public class UsuariosController {
 		userDetails.getAuthorities().forEach(x->{
 			rol.set(x.getAuthority());
 		});
+		if (userDetails.getAuthorities().stream().findFirst().isPresent()){
+			log.info(userDetails.getAuthorities().stream().findFirst().get().getAuthority());
+		}
 		return new ResponseEntity<JwtResponse>(new JwtResponse(token,rol.get()),responseHeaders,HttpStatus.OK);
 	}
 
@@ -144,7 +147,7 @@ public class UsuariosController {
 		return new ResponseEntity<>(this.userManager.buscarUsuario(username),HttpStatus.OK);
 	}
 
-
+	@PreAuthorize("hasRole('ADMIN')")
 	@GetMapping(value =  "/listar" , produces = { MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_PROBLEM_JSON_VALUE })
 	public ResponseEntity<List<PersonalDto>>  listar() throws Exception {
 		log.info("Se invoca listado");

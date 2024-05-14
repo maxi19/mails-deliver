@@ -19,4 +19,7 @@ public class JwtResponse implements Serializable {
 	public String getToken() {
 		return this.jwttoken;
 	}
+
+	public String getRol() { return rol; }
+
 }

@@ -2,6 +2,7 @@ package com.turnero.config;
 
 
 
+import com.turnero.enums.Role;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -53,31 +54,29 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
 	@Override
 	protected void configure(HttpSecurity httpSecurity) throws Exception {
-		// We don't need CSRF for this example
-		httpSecurity.csrf().disable()
-				// dont authenticate this particular request
-				.authorizeRequests()
-				.antMatchers("/**/login").permitAll()
-				.antMatchers("/usuarios/authenticate").permitAll()
-				.antMatchers("/usuarios/user").permitAll()
-				.antMatchers("/usuarios/roles").permitAll()
-				.antMatchers("/usuarios/usuarios").permitAll()
-				.antMatchers("/usuarios/**").permitAll()
-				.antMatchers("/personal/**").permitAll()
-				.antMatchers("/recibo/enviado/**").permitAll()
-				.antMatchers("/email/**").permitAll()
-				.antMatchers("/msdeliver/**").permitAll()
-				.antMatchers("/recibo/enviado/**").permitAll().
-				
-				
-				// all other requests need to be authenticated
-				anyRequest().authenticated().and().
-				// make sure we use stateless session; session won't be used to
-				// store user's state.
-				exceptionHandling().authenticationEntryPoint(jwtAuthenticationEntryPoint).and().sessionManagement()
-				.sessionCreationPolicy(SessionCreationPolicy.STATELESS);
 
-		// Add a filter to validate the tokens with every request
-		httpSecurity.addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class);
+
+		httpSecurity.csrf().disable()
+				.exceptionHandling()
+				.authenticationEntryPoint(jwtAuthenticationEntryPoint)
+				.and()
+				.sessionManagement()
+				.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+				.and()
+				.authorizeRequests()
+				.antMatchers("/usuarios/listar").access("hasRole('ADMIN') ")
+				.antMatchers("/usuarios/authenticate").permitAll()
+				.antMatchers("/upload").permitAll()
+				.antMatchers("/files**").permitAll()
+				.antMatchers("/delete/**").permitAll()
+
+
+
+				.anyRequest().authenticated()
+				.and()
+				.httpBasic();
+			httpSecurity.addFilterBefore(jwtRequestFilter,UsernamePasswordAuthenticationFilter.class);
+
+
 	}
 }

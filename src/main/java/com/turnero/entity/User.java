@@ -96,12 +96,7 @@ public class User  implements UserDetails , Serializable{
 
 	@Override
 	public Collection<? extends GrantedAuthority> getAuthorities() {
-		return Arrays.asList(new GrantedAuthority() {
-			@Override
-			public String getAuthority() {
-				return rol.getRol();
-			}
-		});
+		return Arrays.asList((GrantedAuthority) () -> rol.getRol());
 	}
 
 	@Override
@@ -114,7 +109,6 @@ public class User  implements UserDetails , Serializable{
 
 	@Override
 	public boolean isAccountNonExpired() {
-		// TODO Auto-generated method stub
 		return expired;
 	}
 
