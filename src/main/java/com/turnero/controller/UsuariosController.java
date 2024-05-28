@@ -147,7 +147,7 @@ public class UsuariosController {
 		return new ResponseEntity<>(this.userManager.buscarUsuario(username),HttpStatus.OK);
 	}
 
-	@PreAuthorize("hasRole('ADMIN')")
+	//@PreAuthorize("hasRole('ADMIN')")
 	@GetMapping(value =  "/listar" , produces = { MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_PROBLEM_JSON_VALUE })
 	public ResponseEntity<List<PersonalDto>>  listar() throws Exception {
 		log.info("Se invoca listado");

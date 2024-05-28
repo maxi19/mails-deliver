@@ -64,14 +64,12 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 				.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
 				.and()
 				.authorizeRequests()
-				.antMatchers("/usuarios/listar").access("hasRole('ADMIN') ")
+				.antMatchers("/usuarios/listar").permitAll()
 				.antMatchers("/usuarios/authenticate").permitAll()
+				.antMatchers("/usuarios/usuarios").permitAll()
 				.antMatchers("/upload").permitAll()
 				.antMatchers("/files**").permitAll()
 				.antMatchers("/delete/**").permitAll()
-
-
-
 				.anyRequest().authenticated()
 				.and()
 				.httpBasic();
