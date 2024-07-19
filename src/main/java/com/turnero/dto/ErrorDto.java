@@ -14,4 +14,5 @@ import lombok.ToString;
 public class ErrorDto {
     private String mensaje;
     private HttpStatus httpStatus;
+    private int codigo;
 }

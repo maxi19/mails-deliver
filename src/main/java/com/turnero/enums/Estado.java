@@ -7,6 +7,7 @@ import lombok.RequiredArgsConstructor;
 public enum Estado {
 	NUEVO("NUEVO"),
 	PROCESADO("PROCESADO"),
+	BANDEJA("BANDEJA"),
 	ENVIADO("ENVIADO"),
 	ERROR("ERROR");
 	

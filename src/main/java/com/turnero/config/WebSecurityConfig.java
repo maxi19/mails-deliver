@@ -2,7 +2,6 @@ package com.turnero.config;
 
 
 
-import com.turnero.enums.Role;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -65,16 +64,18 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 				.and()
 				.authorizeRequests()
 				.antMatchers("/usuarios/listar").permitAll()
+				.antMatchers("/usuarios/logout").permitAll()
 				.antMatchers("/usuarios/authenticate").permitAll()
 				.antMatchers("/usuarios/usuarios").permitAll()
+				.antMatchers("/usuarios/permisos").permitAll()
+				.antMatchers("/usuarios/listarPorNombres").permitAll()
 				.antMatchers("/upload").permitAll()
 				.antMatchers("/files**").permitAll()
 				.antMatchers("/delete/**").permitAll()
+				.antMatchers("/recibos/**").permitAll()
 				.anyRequest().authenticated()
 				.and()
 				.httpBasic();
 			httpSecurity.addFilterBefore(jwtRequestFilter,UsernamePasswordAuthenticationFilter.class);
-
-
 	}
 }

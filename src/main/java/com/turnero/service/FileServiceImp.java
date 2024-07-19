@@ -1,23 +1,43 @@
 package com.turnero.service;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
 import org.springframework.stereotype.Service;
 import org.springframework.util.FileSystemUtils;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.turnero.entity.Recibo;
+import com.turnero.enums.Estado;
+import com.turnero.repository.ReciboRepository;
+
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.time.LocalDateTime;
 import java.util.stream.Stream;
 
 @Service
 public class FileServiceImp implements  FileService {
 
-    private final Path root = Paths.get("upload");
 
+	@Value("${root.folder}")
+	private String rootFolder;
+
+	private Path root ;
+	
+    private static final Logger log =  LoggerFactory.getLogger(FileServiceImp.class);
+  
+    
+	@Autowired
+	private ReciboRepository reciboRepository;
+    
+  
     @Override
     public void init() {
     try {
@@ -29,11 +49,19 @@ public class FileServiceImp implements  FileService {
     }
 
     @Override
-    public void save(MultipartFile file)  {
+    public void save(MultipartFile file , String folderBase, String usuario )  {
         try {
+        	this.root = Paths.get(rootFolder.concat(folderBase));
             Files.copy(file.getInputStream(), this.root.resolve(file.getOriginalFilename()));
+            
+            this.registrarRecibo(Estado.NUEVO,  this.root.resolve(file.getOriginalFilename()).toString() , file.getOriginalFilename().toString(), usuario);
+            
+            log.info("se agrego a bandeja el archivio {} {} ", file.getName(), file.getOriginalFilename());
+            
         } catch (IOException e) {
             throw  new RuntimeException("no se pudo guardar el archivo");
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 
@@ -60,11 +88,12 @@ public class FileServiceImp implements  FileService {
     }
 
     @Override
-    public Stream<Path> loadAll() {
+    public Stream<Path> loadAll(String folderBase) {
         try {
+        	this.root = Paths.get(rootFolder.concat(folderBase));
             return Files.walk(this.root,1).filter(path -> !path.equals(this.root)).map(this.root::relativize);
         } catch (IOException  | RuntimeException x)  {
-            throw  new RuntimeException("no se pudo cargar los archivos");
+            throw new RuntimeException("no se pudo cargar los archivos");
         }
 
 
@@ -72,7 +101,6 @@ public class FileServiceImp implements  FileService {
 
     @Override
     public String deleteFile(String filename) {
-
         try {
             Boolean delete =  Files.deleteIfExists(this.root.resolve(filename));
             return "borrado";
@@ -81,4 +109,16 @@ public class FileServiceImp implements  FileService {
             return "error borrando archivos";
         }
     }
+    
+    public void registrarRecibo(final Estado estado , final String path,final  String fileName, final String usuario ) {
+    	Recibo recibo = new Recibo();
+        recibo.setEstado(estado);
+        recibo.setFecha(LocalDateTime.now());
+        recibo.setNombre(fileName);
+        recibo.setPath(path);
+        recibo.setUsuario(usuario);
+        reciboRepository.save(recibo);
+    }
+	
+ 
 }

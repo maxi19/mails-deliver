@@ -1,4 +1,4 @@
-package com.turnero.service;
+package com.turnero.component;
 
 import java.util.*;
 

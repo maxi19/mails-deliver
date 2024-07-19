@@ -2,12 +2,17 @@ package com.turnero.manager;
 
 
 import com.turnero.dto.JwtRequest;
+import com.turnero.dto.PersonalAbreviadoDto;
 import com.turnero.dto.PersonalDto;
+import com.turnero.dto.UserDto;
+
 import org.springframework.data.domain.Page;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.web.bind.annotation.RequestBody;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
 import java.util.List;
 
 public interface UserManager {
@@ -23,6 +28,12 @@ public interface UserManager {
     public PersonalDto buscarUsuario(String username) throws Exception;
 
     public List<PersonalDto> listarPersonal() throws  Exception;
-
+        
     public Page<PersonalDto> listarPersonalV2(Integer pageNo, Integer pageSize, String sortBy ) throws Exception;
+
+    public List<PersonalAbreviadoDto> listarPersonalNombres() throws  Exception;
+    
+    public void logOut(String username) throws  Exception;
+
+    public UserDto consultarPermiso(String username) throws  Exception;
 }

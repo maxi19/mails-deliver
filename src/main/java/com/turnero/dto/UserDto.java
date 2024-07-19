@@ -1,6 +1,8 @@
 package com.turnero.dto;
 
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Set;
 
 import lombok.AllArgsConstructor;
@@ -21,4 +23,5 @@ public class UserDto {
     private String firstName;
     private String lastName;
     private Set<String> credentials;
+    private List<String> scopes = new ArrayList<String>();
 }

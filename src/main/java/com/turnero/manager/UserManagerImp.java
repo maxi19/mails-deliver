@@ -1,36 +1,50 @@
 package com.turnero.manager;
 
+import com.fasterxml.jackson.annotation.JsonCreator.Mode;
+import com.itextpdf.text.pdf.PdfStructTreeController.returnType;
 import com.turnero.config.JwtTokenUtil;
+import com.turnero.controller.SessionTool;
 import com.turnero.dto.JwtRequest;
+import com.turnero.dto.PersonalAbreviadoDto;
 import com.turnero.dto.PersonalDto;
+import com.turnero.dto.SessionData;
+import com.turnero.dto.UserDto;
 import com.turnero.entity.Docente;
 import com.turnero.entity.User;
 import com.turnero.enums.Role;
+import com.turnero.exceptions.DeliverException;
+import com.turnero.redis.Session;
+import com.turnero.redis.SessionDao;
 import com.turnero.service.UserService;
 import com.turnero.utils.RamdomNumber;
+
+
+import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-
-import org.springframework.core.convert.converter.Converter;
+import org.springframework.context.annotation.Bean;
 import org.springframework.data.domain.Page;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.DisabledException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.web.context.HttpSessionSecurityContextRepository;
-import org.springframework.security.web.context.SecurityContextRepository;
 import org.springframework.stereotype.Service;
-import springfox.documentation.swagger2.mappers.ModelMapper;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Objects;
 import java.util.function.Function;
@@ -50,11 +64,20 @@ public class UserManagerImp implements UserManager {
     @Autowired
     private JwtTokenUtil jwtTokenUtil;
 
-
-    private SecurityContextRepository securityContextRepository = new HttpSessionSecurityContextRepository();
+    @Autowired
+    private SessionDao sessionDao;
 
     private static final Logger log =  LoggerFactory.getLogger(UserManagerImp.class);
+    
+    @Autowired
+    private ModelMapper modelMapper;
 
+    
+    @Bean
+    public ModelMapper modelMapper() {
+        return new ModelMapper();
+    }
+    
     @Override
     public String autenticar(JwtRequest authenticationRequest, HttpServletRequest request, HttpServletResponse response    ) throws Exception {
 
@@ -79,6 +102,13 @@ public class UserManagerImp implements UserManager {
         context.setAuthentication(autenteication);
         SecurityContextHolder.setContext(context);
 
+
+        //persistimos datos en session
+        User user =  userService.findByUserName(authenticationRequest.getUsername());
+        if (user == null)
+            user = userService.findByEmail(authenticationRequest.getUsername());
+        
+        sessionDao.saveSession(new Session(user.getUsername(), user.getFolderEntrada(), user.getFolderBandeja(), user.getRol()));
 
         return token;
 
@@ -153,7 +183,6 @@ public class UserManagerImp implements UserManager {
             }
         });
 
-
         return pageDto;
     }
 
@@ -174,5 +203,39 @@ public class UserManagerImp implements UserManager {
             throw new Exception("INVALID_CREDENTIALS", e);
         }
     }
+
+	@Override
+	public List<PersonalAbreviadoDto> listarPersonalNombres() throws Exception {
+		List<PersonalAbreviadoDto> personal = new ArrayList<PersonalAbreviadoDto>();
+		userService.listarTodos().forEach( p -> {
+			PersonalAbreviadoDto dto = this.modelMapper.map(p, PersonalAbreviadoDto.class);
+			dto.completarNombre();
+			personal.add(dto);
+		});
+		
+		return personal;
+	}
+
+	@Override
+	public void logOut(String username) throws Exception {
+		sessionDao.deleteSession(username);
+	}
+
+	@Override
+	public UserDto consultarPermiso(String username) throws Exception {
+		if (sessionDao.existeSession(username)) {
+			
+		     List<String> scopes  = sessionDao.getOneSession(username).getScopes();
+		     String usuario = sessionDao.getOneSession(username).getUsuario();
+		     UserDto userDto = new UserDto();
+		     
+		     userDto.setScopes(scopes);
+		     userDto.setUsername(usuario);
+		     
+			return userDto;
+			
+		} 
+		throw new DeliverException("permiso denegado");
+	}
 
 }

@@ -14,7 +14,7 @@ import org.springframework.stereotype.Service;
 import com.turnero.entity.User;
 import com.turnero.repository.UserRepository;
 
-
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -49,6 +49,9 @@ public class UserServiceImp implements UserService{
             return usuarios.get();
     }
 
+    
+    
+    
     @Override
     public Page<User> getAllUsers(Integer pageNo, Integer pageSize, String sortBy) throws  Exception{
 
@@ -67,4 +70,16 @@ public class UserServiceImp implements UserService{
     public User findByUserName(String UserName) throws Exception {
         return userRepository.findByUserName(UserName);
     }
+
+	@Override
+	public List<User> listarTodos() throws Exception {
+		List<User> usuarios = new ArrayList<User>();
+		userRepository.findAll().forEach(x ->{
+			usuarios.add(x);
+		});
+		return usuarios;
+	}
+    
+    
+    
 }
