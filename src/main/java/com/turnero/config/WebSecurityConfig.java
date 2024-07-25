@@ -31,6 +31,9 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
 	@Autowired
 	private JwtRequestFilter jwtRequestFilter;
+	
+	@Autowired
+	private CustomBearerTokenAccessDeniedHandler CustomBearerTokenAccessDeniedHandler;
 
 	@Autowired
 	public void configure(AuthenticationManagerBuilder auth) throws Exception {
@@ -69,13 +72,19 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 				.antMatchers("/usuarios/usuarios").permitAll()
 				.antMatchers("/usuarios/permisos").permitAll()
 				.antMatchers("/usuarios/listarPorNombres").permitAll()
+				.antMatchers("/email/enviar").permitAll()
 				.antMatchers("/upload").permitAll()
 				.antMatchers("/files**").permitAll()
 				.antMatchers("/delete/**").permitAll()
-				.antMatchers("/recibos/**").permitAll()
+				.antMatchers("/recibos/procesarArchivos").permitAll()
+				.antMatchers("/recibos/bandeja").permitAll()
+
 				.anyRequest().authenticated()
 				.and()
+				
 				.httpBasic();
-			httpSecurity.addFilterBefore(jwtRequestFilter,UsernamePasswordAuthenticationFilter.class);
+		
+		httpSecurity.addFilterBefore(jwtRequestFilter,UsernamePasswordAuthenticationFilter.class);
+	
 	}
 }

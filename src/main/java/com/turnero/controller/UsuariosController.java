@@ -8,6 +8,8 @@ import java.util.concurrent.atomic.AtomicReference;
 
 import com.turnero.dto.*;
 import com.turnero.manager.UserManager;
+
+import org.aspectj.weaver.patterns.ThisOrTargetAnnotationPointcut;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -69,22 +71,12 @@ public class UsuariosController {
 
 
 	@RequestMapping(value = "/user", method = RequestMethod.GET)
-	public ResponseEntity<UserDto> getUser(Authentication auth)
-			throws Exception {
-		log.info("El usuario en sesion es {} ", auth.getName());
-		Set<String> credentials  = new HashSet<String>();
-		credentials.add(auth.getCredentials().toString());
-		return new ResponseEntity<UserDto>(new UserDto(null,auth.getName(), null, null, null, credentials,null), HttpStatus.OK );
+	public ResponseEntity<UserDto> getUser(HttpServletRequest servletRequest) throws Exception {
+		String username =  userComponent.getUser(servletRequest);
+		return new ResponseEntity<UserDto>(this.userManager.buscarUsuario(username), HttpStatus.OK );
 	}
 	
-	@RequestMapping(value = "/user", method = RequestMethod.POST)
-	public ResponseEntity<Object> createUser(UserDto userDto)
-			throws Exception {
-		
-		//log.info("El usuario tiene los roles {} ", auth.getCredentials());
-		
-		return new ResponseEntity<> (null, HttpStatus.OK );
-	}
+
 	
 	@RequestMapping(value = "/roles", method = RequestMethod.POST)
 	public ResponseEntity<Object> getCredentials(Authentication auth)
@@ -103,8 +95,8 @@ public class UsuariosController {
 
 
 	@PostMapping( value = "/registrar", produces = { MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_PROBLEM_JSON_VALUE } )
-	public ResponseEntity<Void> registerPersona(@Valid @RequestBody PersonalDto personal) throws  Exception{
-			userManager.registrarUsuario(personal);
+	public ResponseEntity<Void> registerPersona(@Valid @RequestBody UserDto personal) throws  Exception{
+			//userManager.registrarUsuario(personal);
 		log.info("se registro personal ->{} ", personal);
 		return new ResponseEntity<>(HttpStatus.CREATED);
 	}
@@ -129,13 +121,6 @@ public class UsuariosController {
 	}
 
 
-
-	@GetMapping(value =  "/buscarPersonal/{username}" , produces = { MediaType.APPLICATION_JSON_VALUE,
-			MediaType.APPLICATION_PROBLEM_JSON_VALUE })
-	public ResponseEntity<PersonalDto> buscarPersonal(@PathVariable String username ) throws Exception {
-		log.info("Se busca personal por usuario ");
-		return new ResponseEntity<>(this.userManager.buscarUsuario(username),HttpStatus.OK);
-	}
 
 	//@PreAuthorize("hasRole('ADMIN')")
 	@GetMapping(value =  "/listar" , produces = { MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_PROBLEM_JSON_VALUE })

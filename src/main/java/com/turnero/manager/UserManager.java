@@ -25,7 +25,7 @@ public interface UserManager {
 
     public void apagarUsuario(Integer id) throws Exception;
 
-    public PersonalDto buscarUsuario(String username) throws Exception;
+    public UserDto buscarUsuario(String username) throws Exception;
 
     public List<PersonalDto> listarPersonal() throws  Exception;
         

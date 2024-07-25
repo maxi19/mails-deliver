@@ -22,8 +22,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.method.annotation.MvcUriComponentsBuilder;
 
+import com.turnero.dto.SetCorreoDto;
 import com.turnero.dto.FileMessage;
 import com.turnero.dto.FileModel;
+import com.turnero.dto.PersonalDto;
 import com.turnero.enums.Estado;
 import com.turnero.exceptions.DeliverException;
 import com.turnero.redis.SessionDao;
@@ -67,9 +69,6 @@ public class RecibosManagerImp implements RecibosManager {
     
     private final static String FILE_ERROR = "Fallo al subir los archivos";
     
-	/*
-	 * Archivos a Bandeja de entrada
-	 */
 	@Override
 	public void procesarArchivosABandeja(HttpServletRequest servletRequest) throws Exception {
 		logger.info("Se procedera a pasar los archivos a la bandeja");
@@ -82,6 +81,23 @@ public class RecibosManagerImp implements RecibosManager {
 	}
 
 	@Override
+	public void procesarArchivosABandejaPorUsuario(HttpServletRequest servletRequest, PersonalDto personal)
+			throws Exception {
+		String userName = userComponent.getUser(servletRequest);
+	  	User userRemitente =  userService.findByUserName(userName);
+	  	String destinatario = personal.getEmail();
+	  	personal.getFileItems().forEach(file ->{
+			try {
+				reciboService.procesarRecibo(file.getName(), Estado.BANDEJA, userRemitente , destinatario);
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}	  		
+	  	});
+		
+	}
+
+	@Override
 	public void machearArchivosEnBandeja() throws Exception {
 		HttpServletRequest servletRequest;
 
@@ -89,14 +105,14 @@ public class RecibosManagerImp implements RecibosManager {
 	}
 	
 	@Override
-	public void listarArchivosEnBandeja() throws Exception {
+	public List<SetCorreoDto> listarArchivosEnBandeja( HttpServletRequest servletRequest) throws Exception {
+		String user = userComponent.getUser(servletRequest);
 		logger.info("Se procedera a machear archiovos de bandeja");
-		//reciboService.procesarRecibosEntrantes("", "", Estado.BANDEJA);
+		return reciboService.listarArchivosEnBandeja(user);
 	}
 	
 	@Override
 	public void listarArchivosProcesados() throws Exception {
-		// TODO Auto-generated method stub
 		
 	}
 
@@ -150,6 +166,7 @@ public class RecibosManagerImp implements RecibosManager {
         }).collect(Collectors.toList());
         return  ResponseEntity.status(HttpStatus.OK).body(fileInfos);
 	}
+
 
 
 

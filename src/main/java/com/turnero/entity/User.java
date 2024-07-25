@@ -70,8 +70,6 @@ public class User  implements UserDetails , Serializable{
 	@Column(name = "emailpassword", nullable = true, length = 20)
 	private String emailPassword;
 
-
-	//smtp config
 	@Column(name = "smtp", nullable = true, length = 20)
 	private String smtp;
 

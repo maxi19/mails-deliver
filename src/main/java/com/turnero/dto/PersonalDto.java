@@ -1,24 +1,23 @@
 package com.turnero.dto;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.databind.PropertyNamingStrategy;
-import com.fasterxml.jackson.databind.annotation.JsonNaming;
-import lombok.Getter;
-import lombok.Setter;
+import com.turnero.enums.Role;
+
+import lombok.Data;
 import lombok.ToString;
+
+import java.time.LocalDate;
+import java.util.List;
 
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Null;
 import javax.validation.constraints.Size;
 
-@Getter
-@Setter
+@Data
 @ToString
-@JsonInclude(JsonInclude.Include.NON_EMPTY)
-@JsonIgnoreProperties(ignoreUnknown = true)
-@JsonNaming(PropertyNamingStrategy.SnakeCaseStrategy.class)
+//@JsonInclude(JsonInclude.Include.NON_EMPTY)
+//@JsonIgnoreProperties(ignoreUnknown = true)
+//@JsonNaming(PropertyNamingStrategy.SnakeCaseStrategy.class)
 public class PersonalDto {
 
     @NotEmpty
@@ -29,19 +28,32 @@ public class PersonalDto {
     @Size(min = 5, message = "apellidos como minimo 5 caracteres")
     private String apellidos;
 
+    @NotEmpty
     private String username;
+
+    private  Role role;
 
     @Null
     private String password;
 
     @Email
     private String email;
-
+    
+    private LocalDate nacimiento;
+    
+    private String direccion;
+    
+    private String cp;
+    
     private String patron;
+    
+    private String documento;
+    
+    private List<FileItem> fileItems;
 
-    @NotEmpty
-    private String tipo;
-
-
-
+    @Data
+    public static class FileItem{
+    	String name;
+    }
+    
 }

@@ -12,4 +12,8 @@ public class DeliverException extends Exception {
 		super(mensaje);
 	}
 	
+	public DeliverException(String message, Throwable e) {
+		super(message, e);
+	}
+	
 }

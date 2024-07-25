@@ -1,18 +1,37 @@
 package com.turnero.component;
 
+import java.io.File;
+import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.util.*;
 
 import javax.mail.Authenticator;
-
+import javax.mail.Message;
+import javax.mail.MessagingException;
+import javax.mail.Multipart;
+import javax.mail.Session;
+import javax.mail.Transport;
+import javax.mail.internet.AddressException;
+import javax.mail.internet.InternetAddress;
+import javax.mail.internet.MimeBodyPart;
+import javax.mail.internet.MimeMessage;
+import javax.mail.internet.MimeMultipart;
 
 import com.turnero.dto.DocenteDto;
+import com.turnero.dto.Enviable;
+import com.turnero.dto.ItemEnviable;
+import com.turnero.entity.Recibo;
+import com.turnero.exceptions.DeliverException;
 import com.turnero.repository.PersonalRepository;
+import com.turnero.repository.ReciboRepository;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
+import org.springframework.http.MediaType;
+import org.springframework.http.MediaTypeEditor;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -20,9 +39,11 @@ public class MailServiceImp implements MailService{
 
 	@Value("${config.path.recibos}")
 	private String path;
+	
 	@Autowired
 	private Authenticator config;
 	
+	/*
 	@Value("${config.smtp.host}")
 	private String smtpHost;
 	
@@ -34,102 +55,93 @@ public class MailServiceImp implements MailService{
 	
 	@Value("${config.smtp.auth}")
 	private String smtpAuth;
+	
 	@Value("${config.mail.destinatario}")
 	private String emailUser;
-	
+	*/
 	private static final Logger log =  LoggerFactory.getLogger(MailServiceImp.class);
 
+	@Autowired
+	private ReciboRepository reciboRepository;
 	
-	@Bean
-	public Properties getProperties() {
+
+	public Properties setearConfiguracion(Enviable enviable) {
 		Properties props = new Properties();
-		props.put("mail.smtp.host", smtpHost);
-		props.put("mail.smtp.port", smtpPort);
-		props.put("mail.smtp.ssl.enable", smtpEnable);
-		props.put("mail.smtp.auth", smtpAuth);
+		props.put("mail.smtp.host", enviable.smtpHost());
+		props.put("mail.smtp.port", enviable.smtpPort());
+		props.put("mail.smtp.ssl.enable", enviable.smtpEnable());
+		props.put("mail.smtp.auth", enviable.smtpAuth());
 		return props;
 	}
 
+	
 
-	@Autowired
-	private PersonalRepository personalRepository;
-
-
-	@Override
-	public void enviarRecibos(DocenteDto docenteDto) {
-
-	}
-
-	@Override
-	public void enviarRecibo(DocenteDto docenteDto, int idItem) {
-
-	}
-
-
-	/*
-	@Autowired
-	private ReciboIdentificadoRepository reciboIdentificadoRepository;
-
-	  public void enviarSinMatch(EnvioSinMatchDto envioSinMatchDto) {
-		    Session session = Session.getDefaultInstance(getProperties(), config);
+	public void enviarRecibos(Enviable enviable) {
+		    Session session = Session.getDefaultInstance(setearConfiguracion(enviable), config);
 		    try {
+		    	//creamos email
 		      Message msg = new MimeMessage(session);
-		      msg.setFrom(new InternetAddress(emailUser));
-		      msg.addRecipient(Message.RecipientType.TO, new InternetAddress(envioSinMatchDto.getPersonal().getEmail()));
-		      msg.setSubject("Recibo De Sueldo");
+		      
+		      buildHeaderEmail(enviable, msg);
+		      
+		      	//creamos body terminar
 		      MimeBodyPart textPart = new MimeBodyPart();
 			  textPart.setText("");
-
-			  String UrlRecibo = path.concat("/").concat(envioSinMatchDto.getReciboSinIdentificar().getNombre());
+			  
 			  String htmlBody = "";
 			  Multipart mp = new MimeMultipart();
 			  mp.addBodyPart(textPart);
 
 			  MimeBodyPart htmlPart = new MimeBodyPart();
-			  htmlPart.setContent(htmlBody, "text/html");
+			  htmlPart.setContent(htmlBody,  MediaType.TEXT_HTML_VALUE);
 			  mp.addBodyPart(htmlPart);
+			  
+			  if (enviable.isMultiFile()) {
+				  	for(ItemEnviable item : enviable.getItems()){
+				  		MimeBodyPart attachment = new MimeBodyPart();
+				  		attachment.attachFile(new File(item.getFilesPath()), MediaType.APPLICATION_PDF_VALUE, null);
+				  		attachment.setFileName(item.getFilesName());
+				  		mp.addBodyPart(attachment);
+				  	}
+			  }else {
+				  String UrlRecibo = enviable.getItems().get(0).getFilesPath();
+				  MimeBodyPart attachment = new MimeBodyPart();
+				  attachment.attachFile(new File(UrlRecibo), MediaType.APPLICATION_PDF_VALUE, null);
+				  attachment.setFileName(enviable.getItems().get(0).getFilesName());
+				  mp.addBodyPart(attachment);
+			  }
 
-			  MimeBodyPart attachment = new MimeBodyPart();
-			  attachment.attachFile(new File(UrlRecibo), "application/pdf", null);
-			  attachment.setFileName(envioSinMatchDto.getReciboSinIdentificar().getNombre());
-
-			  mp.addBodyPart(attachment);
 			  msg.setContent(mp);
 			  
+			  //enviamos
 			  Transport.send(msg);
-
-			  ReciboEnviado reciboEnviado = new ReciboEnviado();
-			  reciboEnviado.setPersonal(envioSinMatchDto.getPersonal());
-			  reciboEnviado.setNombre(envioSinMatchDto.getReciboSinIdentificar().getNombre());
-			  LocalDateTime fecha = LocalDateTime.now();
-			  reciboEnviado.setFecha(fecha);
-			  log.info("Se proceso y envio el documento {} ", reciboEnviado);
-			  reciboEnviadoRepository.save(reciboEnviado);
-
-
 			} catch (AddressException e) {
-		    	System.out.println(e.getMessage());
-		    } catch (MessagingException e) {
-		    	System.out.println(e.getMessage());
+				log.error("La direccion {} es invalida o no se pudo enviar",enviable.getToEmail());
+			} catch (MessagingException e ) {
+		    	//throw new DeliverException("Error en mensaje", e);
+				log.error("error en el mensaje para el mail {}", enviable.getToEmail());
 		    } catch (UnsupportedEncodingException e) {
                 throw new RuntimeException(e);
             } catch (IOException e) {
                 throw new RuntimeException(e);
-            }
-          // [END simple_example]
-		  }
+            }finally {
+  			  //reciboRepository.save(enviable.getFile());
+			}
 
-		  public void enviarRecibos(DocenteDto docenteDto) {
-			Session session = Session.getDefaultInstance(getProperties(), config);
+		  }
+/*
+		  public void enviarRecibos(Enviable enviable) {
+			Session session = Session.getDefaultInstance(getProperties(enviable), config);
 		    try {
 		      Message msg = new MimeMessage(session);
-		      msg.setFrom(new InternetAddress(emailUser));
+		      msg.setFrom(new InternetAddress(enviable.getFromEmail()));
 			  msg.setSubject("Recibos De sueldo:");
 			  MimeBodyPart textPart = new MimeBodyPart();
 			  textPart.setText("esto es una texto de prueba");
 			  Multipart mp = new MimeMultipart();
 			  mp.addBodyPart(textPart);
-			  msg.addRecipient(Message.RecipientType.TO,new InternetAddress(docenteDto.getEmail()));
+			  msg.addRecipient(Message.RecipientType.TO,new InternetAddress(enviable.getToEmail()));
+			  
 			  Optional<Personal> docente = personalRepository.findById(docenteDto.getId());
 			  List<ItemDto> recibosEnviados = new ArrayList<>();
 			  for (ItemDto items: docenteDto.getItemDto()) {
@@ -172,6 +184,9 @@ public class MailServiceImp implements MailService{
 				throw new RuntimeException(e);
 			}
           }
+          /*
+		  
+		  /*
 	public void enviarRecibo(DocenteDto docenteDto, int idItem) {
 		Session session = Session.getDefaultInstance(getProperties(), config);
 		try {
@@ -216,6 +231,14 @@ public class MailServiceImp implements MailService{
 	}
 
 	*/
+
+
+
+	private void buildHeaderEmail(Enviable enviable, Message msg) throws MessagingException, AddressException {
+		msg.setFrom(new InternetAddress(enviable.getFromEmail()));
+		  msg.addRecipient(Message.RecipientType.TO, new InternetAddress(enviable.getToEmail()));
+		  msg.setSubject(enviable.getSubject());
+	}
 
 
 

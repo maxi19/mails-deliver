@@ -2,13 +2,12 @@ package com.turnero.component;
 
 import javax.servlet.http.HttpServletRequest;
 
-import com.turnero.exceptions.DeliverException;
+
+import io.jsonwebtoken.ExpiredJwtException;
 
 public interface UserComponent {
-
-
 	
-	public String getUser(HttpServletRequest servletRequest) throws DeliverException;
+	public String getUser(HttpServletRequest servletRequest) throws ExpiredJwtException;
 	
 	
 }

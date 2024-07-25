@@ -20,6 +20,7 @@ import org.springframework.security.web.authentication.WebAuthenticationDetailsS
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
+import com.turnero.exceptions.TokenExpiredException;
 import com.turnero.repository.UserRepository;
 import com.turnero.service.JwtUserDetailsService;
 
@@ -60,12 +61,17 @@ public class JwtRequestFilter extends OncePerRequestFilter {
 			try {
 				username = jwtTokenUtil.getUsernameFromToken(jwtToken);
 			} catch (IllegalArgumentException e) {
-				log.error("Unable to get JWT Token\"");
+				log.error("Unable to get JWT Token");
 			} catch (ExpiredJwtException e) {
-				log.error("JWT Token has expired");
+				log.error("JWT Token has expired for user {}", username);
+				chain.doFilter(request, response);
+				return;
 			}
 		} else {
-			log.warn("JWT Token does not begin with Bearer String");
+			log.warn("JWT Token does not begin with Bearer");
+			chain.doFilter(request, response);
+			return;
+
 		}
 
 		//Once we get the token validate it.

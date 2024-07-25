@@ -1,9 +1,12 @@
 package com.turnero.controller;
 
+import java.io.File;
+import java.util.Iterator;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.commons.io.FileUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,13 +18,16 @@ import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.turnero.dto.SetCorreoDto;
 import com.turnero.dto.FileMessage;
 import com.turnero.dto.FileModel;
+import com.turnero.dto.PersonalDto;
 import com.turnero.exceptions.DeliverException;
 import com.turnero.manager.RecibosManager;
 
@@ -37,19 +43,18 @@ public class RecibosController {
 		private static final Logger log =  LoggerFactory.getLogger(RecibosController.class);
 
 
-	    @GetMapping(value = "/procesarArchivos", produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_PROBLEM_JSON_VALUE})
-	    public ResponseEntity<Void> procesar( HttpServletRequest servletRequest ) throws Exception {
-	    	recibosManager.procesarArchivosABandeja(servletRequest);
+	    @PostMapping(value = "/procesarArchivos", produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_PROBLEM_JSON_VALUE})
+	    public ResponseEntity<Void> procesar( HttpServletRequest servletRequest, @RequestBody PersonalDto personalDto ) throws Exception {
+	    	log.info("se procesa archivo {}", personalDto);	    	
+	    	recibosManager.procesarArchivosABandejaPorUsuario(servletRequest, personalDto);
 	        return new ResponseEntity<>(HttpStatus.OK);
 	    }
 	    
-
-	    @GetMapping(value = "/machear", produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_PROBLEM_JSON_VALUE})
-	    public ResponseEntity<Void> machear() throws Exception {
-	    	recibosManager.machearArchivosEnBandeja();
-	        return new ResponseEntity<>(HttpStatus.OK);
+	    @GetMapping(value = "/bandeja", produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_PROBLEM_JSON_VALUE})
+	    public ResponseEntity<List<SetCorreoDto>> badeja( HttpServletRequest servletRequest) throws Exception {
+	        return new ResponseEntity<List<SetCorreoDto>>( recibosManager.listarArchivosEnBandeja(servletRequest), HttpStatus.OK);
 	    }
-	    
+	    	    
 	    @PostMapping("/upload")
 	    public ResponseEntity<FileMessage> uploadFiles(@RequestParam("files")MultipartFile[] files , HttpServletRequest servletRequest) throws DeliverException{
 	    	return recibosManager.subirArchivos(files, servletRequest);
@@ -73,4 +78,5 @@ public class RecibosController {
 	    }
 
 	    
+
 }

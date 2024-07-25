@@ -4,6 +4,7 @@ import java.time.LocalDateTime;
 
 import javax.persistence.*;
 
+import com.turnero.dto.ItemEnviable;
 import com.turnero.enums.Estado;
 
 import lombok.AllArgsConstructor;
@@ -16,7 +17,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @EqualsAndHashCode
-public class Recibo {
+public class Recibo implements ItemEnviable {
 
 		@Id
 	    @GeneratedValue(strategy= GenerationType.IDENTITY)
@@ -37,5 +38,15 @@ public class Recibo {
 	    private String destinatario;
 	    
 	    private String email;
+
+		@Override
+		public String getFilesName() {
+			return getNombre();
+		}
+
+		@Override
+		public String getFilesPath() {
+			return this.getPath();
+		}
 	    
 }

@@ -9,9 +9,10 @@ import org.springframework.core.io.Resource;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.multipart.MultipartFile;
 
-
+import com.turnero.dto.SetCorreoDto;
 import com.turnero.dto.FileMessage;
 import com.turnero.dto.FileModel;
+import com.turnero.dto.PersonalDto;
 import com.turnero.exceptions.DeliverException;
 
 
@@ -19,7 +20,9 @@ import com.turnero.exceptions.DeliverException;
 public interface RecibosManager {
 	public void procesarArchivosABandeja(HttpServletRequest servletRequest) throws Exception;
 	
-	public void listarArchivosEnBandeja() throws Exception;
+	public void procesarArchivosABandejaPorUsuario(HttpServletRequest servletRequest, PersonalDto personal) throws Exception;
+
+	public List<SetCorreoDto> listarArchivosEnBandeja(HttpServletRequest servletRequest) throws Exception;
 	
 	public void listarArchivosProcesados() throws Exception;
 	

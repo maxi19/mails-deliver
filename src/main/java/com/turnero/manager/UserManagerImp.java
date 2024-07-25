@@ -22,6 +22,7 @@ import com.turnero.utils.RamdomNumber;
 import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.data.domain.Page;
@@ -145,10 +146,11 @@ public class UserManagerImp implements UserManager {
     }
 
     @Override
-    public PersonalDto buscarUsuario(String username) throws Exception {
+    public UserDto buscarUsuario(String username) throws Exception {
         User  user =  this.userService.findByUserName(username);
-        // TODO: 08/05/2024 terminar el mapeo del user adto
-        return new PersonalDto();
+        UserDto userDto = new UserDto();
+        BeanUtils.copyProperties(userDto, user);
+        return userDto;
     }
 
     @Override
