@@ -202,7 +202,7 @@ public class UserManagerImp implements UserManager {
         } catch (DisabledException e) {
             throw new Exception("USER_DISABLED", e);
         } catch (BadCredentialsException e) {
-            throw new Exception("INVALID_CREDENTIALS", e);
+            throw new DeliverException("Credencial invalida", e);
         }
     }
 

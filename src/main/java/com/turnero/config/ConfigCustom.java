@@ -19,7 +19,7 @@ import io.jsonwebtoken.ExpiredJwtException;
 public class ConfigCustom extends ResponseEntityExceptionHandler {
 
 	@ExceptionHandler({DeliverException.class})
-	public ResponseEntity<ErrorDto> MensajeError(Exception exception){
+	public ResponseEntity<ErrorDto> MensajeError(DeliverException exception){
 		ErrorDto e = new ErrorDto();
 		e.setHttpStatus(HttpStatus.BAD_REQUEST);
 		e.setMensaje(exception.getMessage());
