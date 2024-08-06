@@ -1,6 +1,10 @@
 package com.turnero.entity;
 
-import javax.persistence.*;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -18,14 +22,14 @@ public class Personal {
 	@Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Integer personal_id;
-	
+
 	private String nombres;
 
 	private String apellidos;
 
 	private String email;
-	
+
 	private String patron;
 
-	
+
 }

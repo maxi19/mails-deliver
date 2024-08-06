@@ -1,11 +1,9 @@
 package com.turnero.service;
 
-import java.io.File;
 import java.util.List;
 import java.util.Optional;
 
 import com.turnero.dto.SetCorreoDto;
-import com.turnero.entity.Personal;
 import com.turnero.entity.Recibo;
 import com.turnero.entity.User;
 import com.turnero.enums.Estado;
@@ -17,7 +15,11 @@ public interface ReciboService {
 	public List<SetCorreoDto> listarArchivosEnBandeja(String usuario) throws Exception;
 
 	public void procesarRecibosEntrantes(String pathOrigen, String pathDestino, Estado estado, String usuario ) throws Exception;
+
+	public Optional<Recibo> buscarArchivosPorNombre (String fileName)  throws Exception;
 	
-	public Optional<Recibo> buscarArchivosPorNombre (String fileName)  throws Exception ;
+	public Optional<List<Recibo>> buscarPorEmailEnBandeja(String email) throws Exception;
+	
+	public void registrarEnviado(List<Recibo> libro) throws Exception;
 	
 	}

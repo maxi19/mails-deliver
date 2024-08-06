@@ -14,14 +14,14 @@ import lombok.NoArgsConstructor;
 public class SetCorreoDto {
 
 	private int cantidad;
-	
+
 	private String destinatario;
 
 	private String email;
-	
+
 	private List<Recibo> recibos;
-	
+
 	private List<EmailDto> emails;
-	
-	
+
+
 }

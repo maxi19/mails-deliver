@@ -2,6 +2,7 @@ package com.turnero.mappers;
 
 import java.util.ArrayList;
 import java.util.List;
+
 import org.modelmapper.AbstractConverter;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,18 +12,18 @@ public class CollectionConverters<K, L> extends AbstractConverter <List<K>, List
 
 	@Autowired
 	private ModelMapper modelMapper;
-	
+
 
     @Bean
     public ModelMapper modelMapperBean() {
         return new ModelMapper();
     }
-	
-    private Class<L> j; 
-	
+
+    private Class<L> j;
+
     private List<L> outCLass ;
 
-    
+
 	@Override
 	protected List<L> convert(List<K> list) {
 		List<L> outList = createInstanceList();
@@ -35,12 +36,12 @@ public class CollectionConverters<K, L> extends AbstractConverter <List<K>, List
 	}
 
 	public List<L> createInstanceList(){
-		
-		return this.outCLass = new ArrayList<L>();
-		
+
+		return this.outCLass = new ArrayList<>();
+
 	}
-	
-	
+
+
 	public L createInstance() {
 	    try {
 	        return j.getDeclaredConstructor().newInstance();

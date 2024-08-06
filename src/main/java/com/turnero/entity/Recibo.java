@@ -2,7 +2,13 @@ package com.turnero.entity;
 
 import java.time.LocalDateTime;
 
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
 
 import com.turnero.dto.ItemEnviable;
 import com.turnero.enums.Estado;
@@ -25,7 +31,7 @@ public class Recibo implements ItemEnviable {
 
 	    @Column(name = "usuario_creador", nullable = false, length = 20)
 		private String usuario;
-			       
+
 	    private String path;
 
 	    private String nombre;
@@ -34,9 +40,9 @@ public class Recibo implements ItemEnviable {
 	    private Estado estado;
 
 	    private LocalDateTime fecha;
-	    
+
 	    private String destinatario;
-	    
+
 	    private String email;
 
 		@Override
@@ -48,5 +54,5 @@ public class Recibo implements ItemEnviable {
 		public String getFilesPath() {
 			return this.getPath();
 		}
-	    
+
 }

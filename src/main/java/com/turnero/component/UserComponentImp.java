@@ -12,7 +12,7 @@ import io.jsonwebtoken.ExpiredJwtException;
 @Component
 public class UserComponentImp implements UserComponent {
 
-	
+
 	@Autowired
 	private JwtTokenUtil jwtTokenUtil;
 
@@ -22,12 +22,12 @@ public class UserComponentImp implements UserComponent {
 			final String requestTokenHeader = servletRequest.getHeader("Authorization");
 			String  jwtToken = requestTokenHeader.substring(7);
 			username = jwtTokenUtil.getUsernameFromToken(jwtToken);
-			
+
 		return username;
 	}
-	
-	
-	
-	
-	
+
+
+
+
+
 }

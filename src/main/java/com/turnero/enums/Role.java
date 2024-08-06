@@ -2,8 +2,9 @@ package com.turnero.enums;
 
 
 
-import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
+
+import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
 public enum Role implements GrantedAuthority {

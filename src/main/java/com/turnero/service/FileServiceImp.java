@@ -1,5 +1,14 @@
 package com.turnero.service;
 
+import java.io.IOException;
+import java.net.MalformedURLException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.time.LocalDateTime;
+import java.util.Optional;
+import java.util.stream.Stream;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,14 +23,6 @@ import com.turnero.entity.Recibo;
 import com.turnero.enums.Estado;
 import com.turnero.repository.ReciboRepository;
 
-import java.io.IOException;
-import java.net.MalformedURLException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.time.LocalDateTime;
-import java.util.stream.Stream;
-
 @Service
 public class FileServiceImp implements  FileService {
 
@@ -30,14 +31,14 @@ public class FileServiceImp implements  FileService {
 	private String rootFolder;
 
 	private Path root ;
-	
+
     private static final Logger log =  LoggerFactory.getLogger(FileServiceImp.class);
-  
-    
+
+
 	@Autowired
 	private ReciboRepository reciboRepository;
-    
-  
+
+
     @Override
     public void init() {
     try {
@@ -53,11 +54,11 @@ public class FileServiceImp implements  FileService {
         try {
         	this.root = Paths.get(rootFolder.concat(folderBase));
             Files.copy(file.getInputStream(), this.root.resolve(file.getOriginalFilename()));
-            
+
             this.registrarRecibo(Estado.NUEVO,  this.root.resolve(file.getOriginalFilename()).toString() , file.getOriginalFilename().toString(), usuario);
-            
+
             log.info("se agrego a bandeja el archivio {} {} ", file.getName(), file.getOriginalFilename());
-            
+
         } catch (IOException e) {
             throw  new RuntimeException("no se pudo guardar el archivo");
         } catch (Exception e) {
@@ -102,14 +103,19 @@ public class FileServiceImp implements  FileService {
     @Override
     public String deleteFile(String filename) {
         try {
-            Boolean delete =  Files.deleteIfExists(this.root.resolve(filename));
+            //eliminamos el archivo en carpeta base
+        	Boolean delete =  Files.deleteIfExists(this.root.resolve(filename));
+
+        	//eliminamos el archivo en base
+            Optional<Recibo> reciboOpt = reciboRepository.findByNombre(filename);
+            reciboRepository.delete(reciboOpt.get());
             return "borrado";
         } catch (IOException e) {
             e.printStackTrace();
             return "error borrando archivos";
         }
     }
-    
+
     public void registrarRecibo(final Estado estado , final String path,final  String fileName, final String usuario ) {
     	Recibo recibo = new Recibo();
         recibo.setEstado(estado);
@@ -119,6 +125,6 @@ public class FileServiceImp implements  FileService {
         recibo.setUsuario(usuario);
         reciboRepository.save(recibo);
     }
-	
- 
+
+
 }

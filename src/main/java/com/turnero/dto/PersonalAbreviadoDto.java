@@ -12,14 +12,14 @@ public class PersonalAbreviadoDto {
 	private String email;
 
 	private String username;
-	
+
 	private String firstName;
 
 	private String lastName;
-	
+
 	private String completo;
-	
-	
+
+
 	public void completarNombre() {
 		this.completo = this.lastName.concat(", ".concat(firstName));
 	}

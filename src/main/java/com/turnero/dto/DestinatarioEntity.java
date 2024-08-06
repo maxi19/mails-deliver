@@ -1,42 +1,52 @@
 package com.turnero.dto;
 
-import java.util.Arrays;
 import java.util.List;
 
 import com.turnero.entity.Recibo;
 import com.turnero.entity.User;
 
 import lombok.Data;
+import lombok.Getter;
 
 @Data
+@Getter
 public class DestinatarioEntity  implements Enviable{
 
-	private String smtp;
 	private String smtpPort;
 	private String smtpHost;
 	private boolean enabledSmtp;
+	private boolean smtp;
+	private String secret;
 	
 	private String from;
 	private String to;
 	private String subject;
-	private boolean isMultiFile = false;
-
+	private boolean multiFile;
+	
 	private String body;
+
+
 	
 	private List<ItemEnviable> recibos;
-	
+
 
 
 	public DestinatarioEntity(User user, String emailDest, String subject, boolean isMultipleFile , List<ItemEnviable> recibos) {
-		this.smtp = user.getSmtp();
-		this.enabledSmtp = user.isEnbableSmtp();
+		//configuracion de email
+		this.smtp = user.isSmtp();
+		this.enabledSmtp = user.isEnableSmtp();
 		this.smtpPort = user.getSmtpPort();
 		this.smtpHost = user.getSmtphost();
+		
+		//email
+		this.to = emailDest;
 		this.from = user.getEmail();
 		this.recibos = recibos;
+		this.multiFile = isMultipleFile;
+		this.secret = user.getSecret();	
 	}
-	
-	
+
+
 	@Override
 	public String smtpHost() {
 		return smtpHost;
@@ -53,7 +63,7 @@ public class DestinatarioEntity  implements Enviable{
 	}
 
 	@Override
-	public String smtpAuth() {
+	public boolean smtpAuth() {
 		return smtp;
 	}
 
@@ -79,8 +89,8 @@ public class DestinatarioEntity  implements Enviable{
 
 	@Override
 	public boolean isMultiFile() {
-		return isMultiFile;
-	}
+		return multiFile;	
+		}
 
 	@Override
 	public List<ItemEnviable> getItems() {
@@ -91,6 +101,12 @@ public class DestinatarioEntity  implements Enviable{
 	public Recibo getFile() {
 		// TODO Auto-generated method stub
 		return null;
+	}
+
+
+	@Override
+	public String getSecret() {
+		return this.secret;
 	}
 
 }

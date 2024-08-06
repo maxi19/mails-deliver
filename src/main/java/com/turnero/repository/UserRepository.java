@@ -1,14 +1,13 @@
 package com.turnero.repository;
 
-import com.turnero.enums.Role;
-import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Query;
-
-import com.turnero.entity.User;
-import org.springframework.data.repository.PagingAndSortingRepository;
-
 import java.util.List;
 import java.util.Optional;
+
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.PagingAndSortingRepository;
+
+import com.turnero.entity.User;
+import com.turnero.enums.Role;
 
 public interface UserRepository  extends PagingAndSortingRepository<User,Long> {
 

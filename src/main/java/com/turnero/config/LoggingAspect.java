@@ -16,10 +16,10 @@ import org.springframework.stereotype.Component;
 @Component
 public class LoggingAspect {
 
-	
+
     private static final Logger logger = LoggerFactory.getLogger(LoggingAspect.class);
 
-	
+
 	 /**
      * Pointcut that matches all Spring beans in the application's main packages.
      */
@@ -29,14 +29,14 @@ public class LoggingAspect {
     public void applicationPackagePointcut() {
         // Method is empty as this is just a Pointcut, the implementations are in the advices.
     }
-    
+
     @Pointcut("within(@org.springframework.stereotype.Repository *)" +
             " || within(@org.springframework.stereotype.Service *)" +
             " || within(@org.springframework.web.bind.annotation.RestController *)")
         public void springBeanPointcut() {
             // Method is empty as this is just a Pointcut, the implementations are in the advices.
         }
-    
+
 	 @Around("applicationPackagePointcut() && springBeanPointcut()")
 	 public Object logAround(ProceedingJoinPoint joinPoint) throws Throwable {
 	        if (logger.isDebugEnabled()) {

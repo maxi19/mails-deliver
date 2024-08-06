@@ -11,8 +11,8 @@ import lombok.NoArgsConstructor;
 @EqualsAndHashCode
 public class EmailDto {
 
-	private String destinatario;	    
+	private String destinatario;
 	private String email;
 	private String nombre;
-	
+
 }

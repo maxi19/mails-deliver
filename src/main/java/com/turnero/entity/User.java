@@ -1,20 +1,32 @@
 package com.turnero.entity;
 
-import com.turnero.enums.Role;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
-import lombok.ToString;
+import java.io.Serializable;
+import java.util.Arrays;
+import java.util.Collection;
+
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.Inheritance;
+import javax.persistence.InheritanceType;
+import javax.persistence.Table;
 
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import com.turnero.dto.UserDto;
-import java.io.Serializable;
-import java.util.*;
-import javax.persistence.*;
+import com.turnero.enums.Role;
+
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 @Data
 @NoArgsConstructor
@@ -70,8 +82,6 @@ public class User  implements UserDetails , Serializable{
 	@Column(name = "emailpassword", nullable = true, length = 20)
 	private String emailPassword;
 
-	@Column(name = "smtp", nullable = true, length = 20)
-	private String smtp;
 
 	@Column(name = "smtpPort", nullable = true, length = 20)
 	private String smtpPort;
@@ -79,8 +89,11 @@ public class User  implements UserDetails , Serializable{
 	@Column(name = "smtphost", nullable = true, length = 20)
 	private String smtphost;
 
+	@Column(name = "smtp", nullable = true)
+	private boolean smtp;
+
 	@Column(name = "enabledSmtp", nullable = true)
-	private boolean enbableSmtp;
+	private boolean enableSmtp;
 
 	@Column(name = "income", nullable = true, length = 20)
 	private String folderEntrada;
@@ -88,6 +101,9 @@ public class User  implements UserDetails , Serializable{
 	@Column(name = "bandeja", nullable = true, length = 20)
     private String folderBandeja;
 
+	@Column(name = "secret", nullable = true, length = 40)
+    private String secret;
+	
 
 
 	public static User getUser(UserDto userDto){
@@ -156,7 +172,7 @@ public class User  implements UserDetails , Serializable{
 		this.expired = false;
 
 	}
-	public User(String email, String username, String password, String firstName, String lastName, Role rol , String folderEntrada, String folderBandeja) {
+	public User(String email, String username, String password, String firstName, String lastName, Role rol , String folderEntrada, String folderBandeja , String secret) {
 		this.email = email;
 		this.username = username;
 		this.password = password;
@@ -168,7 +184,29 @@ public class User  implements UserDetails , Serializable{
 		this.expired = true;
 		this.folderEntrada = folderEntrada;
 		this.folderBandeja = folderBandeja;
+		this.secret = secret;
+	}
 
+	
+
+	public User(String email, String username, String password, String firstName, String lastName, Role rol , String folderEntrada, String folderBandeja , String secret, boolean smtp, boolean enableSmtp, String smtpHost, String smtpPort) {
+		this.email = email;
+		this.username = username;
+		this.password = password;
+		this.firstName = firstName;
+		this.lastName = lastName;
+		this.rol = rol;
+		this.blocked= true;
+		this.enabled= true;
+		this.expired = true;
+		this.folderEntrada = folderEntrada;
+		this.folderBandeja = folderBandeja;
+		this.secret = secret;
+		
+		this.smtp = smtp;
+		this.enableSmtp = enableSmtp;
+		this.smtphost = smtpHost;
+		this.smtpPort = smtpPort;
 	}
 	
 	public Role getRole() {

@@ -11,7 +11,6 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 
 import com.turnero.dto.ErrorDto;
 import com.turnero.exceptions.DeliverException;
-import com.turnero.exceptions.TokenExpiredException;
 
 import io.jsonwebtoken.ExpiredJwtException;
 
@@ -27,7 +26,7 @@ public class ConfigCustom extends ResponseEntityExceptionHandler {
 		return new ResponseEntity<>(e,HttpStatus.BAD_REQUEST);
 	}
 
-	
+
 	@ExceptionHandler({ExpiredJwtException.class})
 	public ResponseEntity<ErrorDto> MensajeError(ExpiredJwtException exception){
 		ErrorDto e = new ErrorDto();

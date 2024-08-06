@@ -19,8 +19,8 @@ public enum Permisos {
 	DOCENTE_UPDATE("docente:update"),
 	DOCENTE_CREATE("docente:create"),
 	DOCENTE_DELETE("docente:delete");
-	
+
 	@Getter
 	private final String permiso;
-	
+
 }

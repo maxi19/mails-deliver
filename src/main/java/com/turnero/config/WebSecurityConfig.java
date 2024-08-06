@@ -31,10 +31,11 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
 	@Autowired
 	private JwtRequestFilter jwtRequestFilter;
-	
+
 	@Autowired
 	private CustomBearerTokenAccessDeniedHandler CustomBearerTokenAccessDeniedHandler;
 
+	@Override
 	@Autowired
 	public void configure(AuthenticationManagerBuilder auth) throws Exception {
 		// configure AuthenticationManager so that it knows from where to load
@@ -81,10 +82,10 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
 				.anyRequest().authenticated()
 				.and()
-				
+
 				.httpBasic();
-		
+
 		httpSecurity.addFilterBefore(jwtRequestFilter,UsernamePasswordAuthenticationFilter.class);
-	
+
 	}
 }

@@ -10,7 +10,7 @@ public enum Estado {
 	BANDEJA("BANDEJA"),
 	ENVIADO("ENVIADO"),
 	ERROR("ERROR");
-	
+
 	@Getter
 	private final String estado;
 }

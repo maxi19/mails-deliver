@@ -1,9 +1,8 @@
 package com.turnero.service;
 
-import com.turnero.entity.Personal;
-
 import java.util.List;
-import java.util.UUID;
+
+import com.turnero.entity.Personal;
 
 public interface PersonalService {
 
@@ -16,5 +15,5 @@ public interface PersonalService {
 	public List<Personal> listar();
 
 	public void editar(Personal personal, Integer id) throws Exception;
-	
+
 }

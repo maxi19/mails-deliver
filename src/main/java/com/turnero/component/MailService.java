@@ -1,6 +1,5 @@
 package com.turnero.component;
 
-import com.turnero.dto.DocenteDto;
 import com.turnero.dto.Enviable;
 
 public interface MailService {

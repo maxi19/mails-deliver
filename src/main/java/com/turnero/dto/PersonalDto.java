@@ -1,10 +1,5 @@
 package com.turnero.dto;
 
-import com.turnero.enums.Role;
-
-import lombok.Data;
-import lombok.ToString;
-
 import java.time.LocalDate;
 import java.util.List;
 
@@ -12,6 +7,11 @@ import javax.validation.constraints.Email;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Null;
 import javax.validation.constraints.Size;
+
+import com.turnero.enums.Role;
+
+import lombok.Data;
+import lombok.ToString;
 
 @Data
 @ToString
@@ -38,22 +38,22 @@ public class PersonalDto {
 
     @Email
     private String email;
-    
+
     private LocalDate nacimiento;
-    
+
     private String direccion;
-    
+
     private String cp;
-    
+
     private String patron;
-    
+
     private String documento;
-    
+
     private List<FileItem> fileItems;
 
     @Data
     public static class FileItem{
     	String name;
     }
-    
+
 }

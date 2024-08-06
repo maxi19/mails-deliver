@@ -1,6 +1,9 @@
 package com.turnero.service;
 
-import com.turnero.enums.Role;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,11 +15,8 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.turnero.entity.User;
+import com.turnero.enums.Role;
 import com.turnero.repository.UserRepository;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
 
 @Service
 public class UserServiceImp implements UserService{
@@ -49,9 +49,9 @@ public class UserServiceImp implements UserService{
             return usuarios.get();
     }
 
-    
-    
-    
+
+
+
     @Override
     public Page<User> getAllUsers(Integer pageNo, Integer pageSize, String sortBy) throws  Exception{
 
@@ -73,13 +73,13 @@ public class UserServiceImp implements UserService{
 
 	@Override
 	public List<User> listarTodos() throws Exception {
-		List<User> usuarios = new ArrayList<User>();
+		List<User> usuarios = new ArrayList<>();
 		userRepository.findAll().forEach(x ->{
 			usuarios.add(x);
 		});
 		return usuarios;
 	}
-    
-    
-    
+
+
+
 }

@@ -1,5 +1,9 @@
 package com.turnero.service;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -7,18 +11,13 @@ import com.turnero.entity.Personal;
 import com.turnero.exceptions.DeliverException;
 import com.turnero.repository.PersonalRepository;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
-
 @Service
 public class PersonalServiceImp implements PersonalService {
 
 	@Autowired
 	private PersonalRepository personalRepository;
-	
-	
+
+
 	@Override
 	public void Add(Personal personal) throws Exception {
 		if (!personalRepository.findByEmail(personal.getEmail()).isEmpty()) {
@@ -45,7 +44,7 @@ public class PersonalServiceImp implements PersonalService {
 	}
 	@Override
 	public List<Personal> listar() {
-		List<Personal> listado = new ArrayList<Personal>();
+		List<Personal> listado = new ArrayList<>();
 		for (Personal personal : personalRepository.findAll()) {
 			listado.add(personal);
 		}

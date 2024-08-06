@@ -1,10 +1,10 @@
 package com.turnero.controller;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
-
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 @Component
 public class SessionTool {
@@ -25,14 +25,14 @@ public class SessionTool {
         }
         throw  new Exception("Data Session Not found");
     }
-    
+
     public void remove(String key) throws Exception{
         if (this.request.getSession().getAttribute(key) != null){
              this.request.getSession().removeAttribute(key);
         }
         throw new Exception("Data Session does not found");
     }
-    
+
 
 
 

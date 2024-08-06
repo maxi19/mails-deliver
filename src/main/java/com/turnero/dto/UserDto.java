@@ -5,8 +5,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
-import javax.persistence.Column;
-
 import com.turnero.enums.Role;
 
 import lombok.AllArgsConstructor;
@@ -28,9 +26,9 @@ public class UserDto {
     private String lastName;
     private Role rol;
     private Set<String> credentials;
-    private List<String> scopes = new ArrayList<String>();
+    private List<String> scopes = new ArrayList<>();
 	private boolean enabled;
 	private boolean expired;
 	private boolean blocked;
-    
+
 }

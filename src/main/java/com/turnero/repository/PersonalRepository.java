@@ -3,15 +3,16 @@ package com.turnero.repository;
 import java.util.Optional;
 
 import org.springframework.data.repository.CrudRepository;
+import org.springframework.stereotype.Repository;
 
 import com.turnero.entity.Personal;
-import org.springframework.stereotype.Repository;
 
 @Repository
 public interface PersonalRepository extends CrudRepository<Personal, Integer>{
 
 
-    Optional<Personal> findById(Integer id);
+    @Override
+	Optional<Personal> findById(Integer id);
     Optional<Personal> findByEmail(String email);
-	
+
 }

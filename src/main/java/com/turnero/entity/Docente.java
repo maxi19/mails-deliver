@@ -1,14 +1,12 @@
 package com.turnero.entity;
 
-import com.turnero.enums.Role;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-import lombok.RequiredArgsConstructor;
-
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import java.util.Collection;
+
+import com.turnero.enums.Role;
+
+import lombok.Data;
+import lombok.RequiredArgsConstructor;
 
 @Data
 @RequiredArgsConstructor

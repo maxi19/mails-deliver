@@ -1,10 +1,10 @@
 package com.turnero.config;
 
-import org.springframework.web.context.request.ServletRequestAttributes;
+import static org.springframework.web.context.request.RequestContextHolder.currentRequestAttributes;
 
 import javax.servlet.http.HttpSession;
 
-import static org.springframework.web.context.request.RequestContextHolder.currentRequestAttributes;
+import org.springframework.web.context.request.ServletRequestAttributes;
 
 public class SessionContext { // ver si se deja thread-safe
 
@@ -23,8 +23,9 @@ public class SessionContext { // ver si se deja thread-safe
     }
 
     public <T> void add(String attrName, T value) throws Exception {
-        if (value == null)
-            throw new Exception("value for attr '" + attrName + "' is null");
+        if (value == null) {
+			throw new Exception("value for attr '" + attrName + "' is null");
+		}
         retrieveCurrentSession().setAttribute(attrName, value);
 
     }
