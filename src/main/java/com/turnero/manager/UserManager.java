@@ -18,7 +18,7 @@ public interface UserManager {
 
     public String autenticar(@RequestBody JwtRequest authenticationRequest, HttpServletRequest request, HttpServletResponse response  ) throws Exception;
 
-    public void registrarUsuario(PersonalDto personalDto) throws Exception;
+    public void registrarUsuario(UserDto userDto) throws Exception;
 
     public void editarUsuario(Integer id,PersonalDto personalDto) throws Exception;
 

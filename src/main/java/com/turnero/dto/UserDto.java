@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
+import com.fasterxml.jackson.annotation.JsonAlias;
 import com.turnero.enums.Role;
 
 import lombok.AllArgsConstructor;
@@ -19,13 +20,24 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 public class UserDto {
+	
+	@JsonAlias("email")
     private String email;
-    private String username;
+    
+	
+	private String username;
+	
     private String password;
+
+	@JsonAlias("nombres")
     private String firstName;
+	
+	@JsonAlias("apellidos")
     private String lastName;
-    private Role rol;
+	
+    private String rol;
     private Set<String> credentials;
+    
     private List<String> scopes = new ArrayList<>();
 	private boolean enabled;
 	private boolean expired;

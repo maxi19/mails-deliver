@@ -106,7 +106,8 @@ public class UsuariosController {
 
 	@PostMapping( value = "/registrar", produces = { MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_PROBLEM_JSON_VALUE } )
 	public ResponseEntity<Void> registerPersona(@Valid @RequestBody UserDto personal) throws  Exception{
-			//userManager.registrarUsuario(personal);
+	
+		userManager.registrarUsuario(personal);
 		log.info("se registro personal ->{} ", personal);
 		return new ResponseEntity<>(HttpStatus.CREATED);
 	}

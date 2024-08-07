@@ -28,5 +28,9 @@ public enum Role implements GrantedAuthority {
 	public String getAuthority() {
 		return this.rol;
 	}
+	
+	 public static Role getRole(String role){
+		return Role.valueOf(role);
+	}
 }
 

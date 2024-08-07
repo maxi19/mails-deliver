@@ -107,15 +107,9 @@ public class UserManagerImp implements UserManager {
     }
 
     @Override
-    public void registrarUsuario(PersonalDto personalDto) throws Exception {
-        if (personalDto.equals("DOCENTE")){
-            this.userService.registrarUsuario(new Docente(personalDto.getEmail(),
-                    RamdomNumber.getRamdomNumber(),"AAbb0011", personalDto.getNombres(),personalDto.getApellidos(), Role.DOCENTE,"SInPatron"  ));
-        }else{
-            this.userService.registrarUsuario(new User(personalDto.getEmail(),
-                    RamdomNumber.getRamdomNumber(),"AAbb0011", personalDto.getNombres(),personalDto.getApellidos(), Role.SECRETARIA));
-
-        }
+    public void registrarUsuario(UserDto userDto) throws Exception {
+        this.userService.registrarUsuario(new User(userDto.getEmail(),
+                userDto.getUsername(),"", userDto.getFirstName(),userDto.getLastName(), Role.getRole(userDto.getRol()) ));
     }
 
     @Override
@@ -170,6 +164,7 @@ public class UserManagerImp implements UserManager {
             public PersonalDto apply(User user) {
                 PersonalDto personalDto = new PersonalDto();
                 personalDto.setApellidos(user.getLastName());
+                personalDto.setNombres(user.getFirstName());
                 personalDto.setEmail(user.getEmail());
                 personalDto.setUsername(user.getUsername());
                 return personalDto;
