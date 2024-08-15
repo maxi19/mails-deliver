@@ -68,7 +68,7 @@ public class UserServiceImp implements UserService{
 
     @Override
     public User findByUserName(String UserName) throws Exception {
-        return userRepository.findByUserName(UserName);
+        return userRepository.buscarPorUsuario(UserName);
     }
 
 	@Override

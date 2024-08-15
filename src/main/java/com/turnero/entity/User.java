@@ -47,10 +47,10 @@ public class User  implements UserDetails , Serializable{
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 
-	@Column(nullable = false, unique = true, length = 45)
+	@Column( name = "email", nullable = false, unique = true, length = 45)
 	private String email;
 
-	@Column(nullable = false, unique = true, length = 45)
+	@Column(name = "username", nullable = false, unique = true, length = 45)
 	private String username;
 
 	@Column(nullable = false, length = 64)

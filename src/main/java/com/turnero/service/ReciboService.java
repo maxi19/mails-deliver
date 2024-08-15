@@ -22,4 +22,6 @@ public interface ReciboService {
 	
 	public void registrarEnviado(List<Recibo> libro) throws Exception;
 	
+	public void registrarEnviado(String nombreRecibo) throws Exception;
+
 	}

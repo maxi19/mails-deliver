@@ -3,14 +3,13 @@ package com.turnero.manager;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.concurrent.CompletableFuture;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.turnero.component.MailService;
+import com.turnero.component.SenderService;
 import com.turnero.dto.DestinatarioEntity;
 import com.turnero.dto.Enviables;
 import com.turnero.dto.ItemEnviable;
@@ -26,10 +25,12 @@ public class EmailManagerImp implements EmailManager{
 	private UserService userService;
 
     @Autowired
-    private MailService mailService;
+    private SenderService senderService;
 
     @Autowired
     private ReciboService reciboService;
+    
+    private static final String SUBJECT ="RECIBOS DE SUELDO";
 
 	private static final Logger log =  LoggerFactory.getLogger(EmailManagerImp.class);
 
@@ -37,7 +38,7 @@ public class EmailManagerImp implements EmailManager{
 	@Override
 	public void enviarEmail(Enviables enviables, String userName) throws Exception{
 
-		User user = obtenerUsuario(userName);
+		User user = userService.findByUserName(userName);
 		
 		// nos fijamso si tiene mas de un adjujnto o uno solo
 		enviables.getDestinatarios().stream().forEach(destinatario ->{
@@ -56,36 +57,15 @@ public class EmailManagerImp implements EmailManager{
 							itemsEnviables.add(item);
 						});
 						
-						mailService.enviarRecibos(new DestinatarioEntity(user, destinatario.getEmail(), "recibos de sueldo", destinatario.isMultipleFile(),itemsEnviables));
-						this.reciboService.registrarEnviado(lstOptRecibos.get());
+							senderService.enviarRecibos(new DestinatarioEntity(user, destinatario.getEmail(), SUBJECT, destinatario.isMultipleFile(),itemsEnviables));
+						
+							this.reciboService.registrarEnviado(lstOptRecibos.get());							
 						
 					} catch (Exception e) {
-						// TODO Auto-generated catch block
+						
 						e.printStackTrace();
 					}
 		});
 	}
-
-
-
-
-	private User obtenerUsuario(String userName) {
-		try {
-			return userService.findByUserName(userName);
-		} catch (Exception e) {
-
-		}
-		return null;
-	}
-
-
-
-
-	@Override
-	public CompletableFuture<?> enviarEmailV2(Enviables enviables, String userName) throws Exception {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
 
 }

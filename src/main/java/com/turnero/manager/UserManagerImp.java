@@ -134,7 +134,9 @@ public class UserManagerImp implements UserManager {
     public UserDto buscarUsuario(String username) throws Exception {
         User  user =  this.userService.findByUserName(username);
         UserDto userDto = new UserDto();
-        BeanUtils.copyProperties(userDto, user);
+        BeanUtils.copyProperties(user, userDto);
+        userDto.setRol(user.getRol().rol);
+        userDto.setPassword("XXXXXXXXXXXXXX");
         return userDto;
     }
 

@@ -70,6 +70,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 				.antMatchers("/usuarios/listar").permitAll()
 				.antMatchers("/usuarios/logout").permitAll()
 				.antMatchers("/usuarios/authenticate").permitAll()
+				.antMatchers("/usuarios/user").permitAll()
 				.antMatchers("/usuarios/usuarios").permitAll()
 				.antMatchers("/usuarios/registrar").permitAll()
 				.antMatchers("/usuarios/permisos").permitAll()

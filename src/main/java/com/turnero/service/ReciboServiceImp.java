@@ -184,4 +184,18 @@ public class ReciboServiceImp implements ReciboService{
 	}
 
 
+
+
+	@Override
+	public void registrarEnviado(String nombre) throws Exception {
+		Optional<Recibo> optRecibo =  buscarArchivosPorNombre(nombre);
+		if (!optRecibo.isEmpty()) {
+			logger.error("No se encontro el recibo {}", nombre);
+			throw new Exception("No se encontro el recibo "+nombre);
+		}
+		optRecibo.get().setEstado(Estado.ENVIADO);
+		this.reciboRepository.save(optRecibo.get());			
+	}
+
+
 }
