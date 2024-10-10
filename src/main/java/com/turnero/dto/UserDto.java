@@ -36,6 +36,7 @@ public class UserDto {
     private String lastName;
 	
     private String rol;
+    
     private Set<String> credentials;
     
     private List<String> scopes = new ArrayList<>();

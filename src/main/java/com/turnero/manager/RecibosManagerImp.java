@@ -121,8 +121,8 @@ public class RecibosManagerImp implements RecibosManager {
 
         try{
             List<String> fileNames = new ArrayList<>();
-            Arrays.asList(files).stream().forEach(file->{
-                fileService.save(file , path, userName );
+            Arrays.asList(files).stream().forEach(file->{        
+            	fileService.save(file , path, userName);
                 fileNames.add(file.getOriginalFilename());
             });
             return ResponseEntity.status(HttpStatus.OK).body(new FileMessage(FILE_UPLOADED_SUCCESSFULLY + fileNames));

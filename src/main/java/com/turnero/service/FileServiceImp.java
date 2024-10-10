@@ -50,9 +50,16 @@ public class FileServiceImp implements  FileService {
     }
 
     @Override
-    public void save(MultipartFile file , String folderBase, String usuario )  {
+    public void save(MultipartFile file , String folderBase, String usuario ) throws RuntimeException {
         try {
+        	Optional<Recibo> optRecibo = this.reciboRepository.findByNombre(file.getOriginalFilename().toString());
+        	
+        	if (!optRecibo.isEmpty()) {
+				throw new IOException("el archivo ya existe en sistema");
+			}
+        	
         	this.root = Paths.get(rootFolder.concat(folderBase));
+        	
             Files.copy(file.getInputStream(), this.root.resolve(file.getOriginalFilename()));
 
             this.registrarRecibo(Estado.NUEVO,  this.root.resolve(file.getOriginalFilename()).toString() , file.getOriginalFilename().toString(), usuario);
@@ -62,7 +69,7 @@ public class FileServiceImp implements  FileService {
         } catch (IOException e) {
             throw  new RuntimeException("no se pudo guardar el archivo");
         } catch (Exception e) {
-            e.printStackTrace();
+        	log.error("se produjo un error : {} ", e);
         }
     }
 

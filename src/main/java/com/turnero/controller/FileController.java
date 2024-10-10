@@ -3,6 +3,8 @@ package com.turnero.controller;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 import javax.servlet.http.HttpServletRequest;
@@ -27,6 +29,7 @@ import org.springframework.web.servlet.mvc.method.annotation.MvcUriComponentsBui
 import com.turnero.component.UserComponent;
 import com.turnero.dto.FileMessage;
 import com.turnero.dto.FileModel;
+import com.turnero.exceptions.DeliverException;
 import com.turnero.service.FileService;
 import com.turnero.service.UserService;
 
@@ -48,7 +51,16 @@ public class FileController {
     private final static String FILE_UPLOADED_SUCCESSFULLY  = "Se subieron los archivos correctamente";
 
     private final static String FILE_ERROR = "Fallo al subir los archivos";
+    
+    private final static String FILE_EXIST_ = "El archivo ya existe";
+    
+    //private static final String expresion="(\\w+(\\s)?\\w+),(\\s)?([a-zA-ZÀ-ÿ]+(\\s{0,2})?[a-zA-ZÀ-ÿ]+)";
+    
+    private static final String expresion="([a-zA-ZÀ-ÿ\\u00f1\\u00d1]+(\\s)?([a-zA-ZÀ-ÿ\\u00f1\\u00d1]+)?),(\\s)?([a-zA-ZÀ-ÿ]+(\\s{0,2})?[a-zA-ZÀ-ÿ]+)";
 
+    private static final Pattern PATTERN = Pattern.compile(expresion);
+    
+    
     @PostMapping("/upload")
     public ResponseEntity<FileMessage> uploadFiles(@RequestParam("files")MultipartFile[] files , HttpServletRequest servletRequest) throws Exception{
 
@@ -57,12 +69,13 @@ public class FileController {
 		final String folderBase = userService.findByUserName(username).getFolderEntrada();
 
         try{
+        	
             List<String> fileNames = new ArrayList<>();
-
-            Arrays.asList(files).stream().forEach(file->{
-                fileService.save(file,folderBase, username);
-                fileNames.add(file.getOriginalFilename());
-                log.info("se sube archivo {}",file.getOriginalFilename());
+                Arrays.asList(files).stream().forEach(file->{
+	                fileService.save(file, folderBase, username);
+	                fileNames.add(file.getOriginalFilename());
+	                logFile(file.getOriginalFilename());
+	                log.info("se sube archivo {}",file.getOriginalFilename());
             });
             return ResponseEntity.status(HttpStatus.OK).body(new FileMessage(FILE_UPLOADED_SUCCESSFULLY + fileNames));
         }catch (Exception e){
@@ -84,6 +97,7 @@ public class FileController {
             String filename = path.getFileName().toString();
             String url = MvcUriComponentsBuilder.fromMethodName(FileController.class,"getFile",
                     path.getFileName().toString()).build().toString();
+           
             return new FileModel(filename, url);
         }).collect(Collectors.toList());
         return  ResponseEntity.status(HttpStatus.OK).body(fileInfos);
@@ -108,4 +122,17 @@ public class FileController {
         }
     }
 
+    private void subirArchivo(MultipartFile file, String folderBase, String username )  throws DeliverException {
+    		fileService.save(file,folderBase, username);			
+    }
+    
+    private void logFile(String fileName ) {
+        Matcher mat = PATTERN.matcher(fileName);
+        
+        if (mat.find()) {
+			log.info("expresion se capturo nombre: {}", mat.group() );
+		}
+        
+    }
+    
     }
