@@ -24,6 +24,9 @@ public class UserServiceImp implements UserService{
     @Autowired
     private UserRepository userRepository;
 
+    @Autowired
+    private BCryptPasswordEncoder passwordEncoder;
+
     public UserServiceImp(UserRepository userRepo){
         this.userRepository = userRepo;
     }
@@ -32,7 +35,6 @@ public class UserServiceImp implements UserService{
 
     @Override
     public void registrarUsuario(User user)throws Exception{
-        BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
         user.setPassword(passwordEncoder.encode(user.getPassword()));
     	userRepository.save(user);
         logger.info("se registro personal ->{} ", user);

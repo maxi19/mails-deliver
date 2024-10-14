@@ -31,7 +31,6 @@ import com.turnero.dto.JwtRequest;
 import com.turnero.dto.PersonalAbreviadoDto;
 import com.turnero.dto.PersonalDto;
 import com.turnero.dto.UserDto;
-import com.turnero.entity.Docente;
 import com.turnero.entity.User;
 import com.turnero.enums.Role;
 import com.turnero.exceptions.DeliverException;

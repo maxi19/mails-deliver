@@ -2,6 +2,8 @@ package com.turnero.service;
 
 import java.time.LocalDate;
 
+import javax.transaction.Transactional;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -15,7 +17,7 @@ public class EmailServiceImp implements EmailService{
 	@Autowired
 	private EmailRepository emailRepository;
 	
-	
+	@Transactional
 	@Override
 	public void persistirEmail(String to, String from,String subject,String body, String attachament,  Estado estado, String error) throws Exception {
 	

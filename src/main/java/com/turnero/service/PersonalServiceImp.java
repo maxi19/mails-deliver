@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import javax.transaction.Transactional;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -18,6 +20,7 @@ public class PersonalServiceImp implements PersonalService {
 	private PersonalRepository personalRepository;
 
 
+	@Transactional
 	@Override
 	public void Add(Personal personal) throws Exception {
 		if (!personalRepository.findByEmail(personal.getEmail()).isEmpty()) {
@@ -26,6 +29,7 @@ public class PersonalServiceImp implements PersonalService {
 		personalRepository.save(personal);
 	}
 
+	@Transactional
 	@Override
 	public void editar(Personal personal, Integer id) throws Exception {
 
@@ -60,6 +64,7 @@ public class PersonalServiceImp implements PersonalService {
 		return optPersonal.get();
 	}
 
+	@Transactional
 	@Override
 	public void eliminarPersonal(Integer id) throws Exception {
 		try {

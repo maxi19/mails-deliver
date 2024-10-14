@@ -6,9 +6,8 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.Inheritance;
+import javax.persistence.InheritanceType;
 
 import com.turnero.dto.ItemEnviable;
 import com.turnero.enums.Estado;
@@ -22,12 +21,8 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@EqualsAndHashCode
-public class Recibo implements ItemEnviable {
-
-		@Id
-	    @GeneratedValue(strategy= GenerationType.IDENTITY)
-	    private Integer id;
+@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
+public class Recibo  extends AbstractEntity implements ItemEnviable {
 
 	    @Column(name = "usuario_creador", nullable = false, length = 20)
 		private String usuario;

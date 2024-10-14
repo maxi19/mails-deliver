@@ -9,6 +9,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.transaction.annotation.EnableTransactionManagement;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -23,6 +24,7 @@ import com.turnero.dto.PersonalDto;
 import com.turnero.manager.EmailManager;
 
 @RestController
+@EnableTransactionManagement
 @RequestMapping(value = "/email")
 @CrossOrigin(origins = "${cross.origin}", allowCredentials = "true")
 public class EmailController {

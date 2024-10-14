@@ -3,15 +3,15 @@ package com.turnero.repository;
 import java.util.List;
 import java.util.Optional;
 
+import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 
 import com.turnero.entity.Recibo;
 import com.turnero.enums.Estado;
 
 @Repository
-public interface ReciboRepository extends CrudRepository<Recibo, Integer>{
+public interface ReciboRepository extends JpaRepository<Recibo, Integer>{
 
 	//@Query("SELECT u FROM Recibo u WHERE u.nombre = ?1")
 	Optional<Recibo> findByNombre(String nombre);

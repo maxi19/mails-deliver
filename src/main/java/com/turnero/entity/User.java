@@ -8,9 +8,6 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
 import javax.persistence.Table;
@@ -36,16 +33,13 @@ import lombok.ToString;
 @Entity
 @ToString
 @Inheritance(strategy=InheritanceType.SINGLE_TABLE)
-public class User  implements UserDetails , Serializable{
+public class User  extends AbstractEntity implements UserDetails , Serializable{
 
 	/**
 	 *
 	 */
 	private static final long serialVersionUID = 1L;
 
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Long id;
 
 	@Column( name = "email", nullable = false, unique = true, length = 45)
 	private String email;

@@ -9,6 +9,8 @@ import java.time.LocalDateTime;
 import java.util.Optional;
 import java.util.stream.Stream;
 
+import javax.transaction.Transactional;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -50,6 +52,7 @@ public class FileServiceImp implements  FileService {
     }
 
     @Override
+    @Transactional
     public void save(MultipartFile file , String folderBase, String usuario ) throws RuntimeException {
         try {
         	Optional<Recibo> optRecibo = this.reciboRepository.findByNombre(file.getOriginalFilename().toString());

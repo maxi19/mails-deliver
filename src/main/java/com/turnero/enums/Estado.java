@@ -9,7 +9,9 @@ public enum Estado {
 	PROCESADO("PROCESADO"),
 	BANDEJA("BANDEJA"),
 	ENVIADO("ENVIADO"),
-	ERROR("ERROR");
+	ERROR("ERROR"),
+	NOIDENTIFICADO("NO IDENTIFICADO"),
+	IDENTIFICADO("IDENTIFICADO");
 
 	@Getter
 	private final String estado;

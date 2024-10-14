@@ -5,9 +5,8 @@ import java.time.LocalDate;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.Inheritance;
+import javax.persistence.InheritanceType;
 
 import com.turnero.enums.Estado;
 
@@ -21,13 +20,9 @@ import lombok.ToString;
 @RequiredArgsConstructor
 @ToString
 @Entity
-public class Email {
-	
-
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private int id;
-	
+@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
+public class Email extends AbstractEntity{
+		
 	private String to;
 	private String from;
 	private String subject;

@@ -8,6 +8,8 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import javax.transaction.Transactional;
+
 import org.apache.commons.io.FileUtils;
 import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
@@ -56,6 +58,7 @@ public class ReciboServiceImp implements ReciboService{
 
 
 	@Override
+	@Transactional
 	public void procesarRecibo(String strFilePath, Estado estado, User userConfigEmisor, String destinatario) throws Exception {
 		File file = new File(path.concat(userConfigEmisor.getFolderEntrada().concat("\\").concat(strFilePath)));
 		File fileDestino= new File(path.concat(userConfigEmisor.getFolderBandeja().concat("\\").concat(strFilePath)));

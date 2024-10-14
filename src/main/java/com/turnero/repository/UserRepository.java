@@ -5,10 +5,12 @@ import java.util.Optional;
 
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.PagingAndSortingRepository;
+import org.springframework.stereotype.Repository;
 
 import com.turnero.entity.User;
 import com.turnero.enums.Role;
 
+@Repository
 public interface UserRepository  extends PagingAndSortingRepository<User,Long> {
 
     @Query("SELECT u FROM User u WHERE u.email = ?1")

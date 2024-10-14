@@ -32,22 +32,19 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 	@Autowired
 	private JwtRequestFilter jwtRequestFilter;
 
-	@Autowired
-	private CustomBearerTokenAccessDeniedHandler CustomBearerTokenAccessDeniedHandler;
-
+    @Autowired
+    private BCryptPasswordEncoder passwordEncoder;
+	
 	@Override
 	@Autowired
 	public void configure(AuthenticationManagerBuilder auth) throws Exception {
 		// configure AuthenticationManager so that it knows from where to load
 		// user for matching credentials
 		// Use BCryptPasswordEncoder
-		auth.userDetailsService(jwtUserDetailsService).passwordEncoder(passwordEncoder());
+		auth.userDetailsService(jwtUserDetailsService).passwordEncoder(passwordEncoder);
 	}
 
-	@Bean
-	public static PasswordEncoder passwordEncoder() {
-		return new BCryptPasswordEncoder();
-	}
+
 
 	@Bean
 	@Override

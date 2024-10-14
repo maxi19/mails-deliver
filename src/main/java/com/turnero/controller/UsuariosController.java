@@ -20,6 +20,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.transaction.annotation.EnableTransactionManagement;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -42,6 +43,7 @@ import com.turnero.manager.UserManager;
 
 @RestController
 @RequestMapping(value = "/usuarios")
+@EnableTransactionManagement
 @CrossOrigin(origins = "${cross.origin}", allowCredentials = "true")
 public class UsuariosController {
 

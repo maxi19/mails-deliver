@@ -14,10 +14,13 @@ public class JwtUserDetailsService implements UserDetailsService {
 	@Autowired
 	private UserRepository userRepo;
 
+	
+	public JwtUserDetailsService(UserRepository userRepository  ) {
+		this.userRepo = userRepository;
+	}
+	
 	@Override
-	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-
-		
+	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {	
 		UserDetails user =	userRepo.buscarPorUsuario(username);
 
 		if (user == null){
